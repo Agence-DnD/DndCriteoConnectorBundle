@@ -1,0 +1,13 @@
+parameters:
+    dnd_criteo_connector.writer.file.xml_product.class: Dnd\Bundle\CriteoConnectorBundle\Writer\File\XmlProductWriter
+services:
+    dnd_criteo_connector.writer.file.xml_product:
+        class: %dnd_criteo_connector.writer.file.xml_product.class%
+        arguments:
+            - '@pim_connector.writer.file.file_path_resolver'
+            - '@akeneo_buffer.factory.array_buffer'
+            - '@pim_catalog.repository.attribute'
+            - '@pim_catalog.manager.channel'
+            - '@pim_catalog.repository.category'
+            - '@pim_catalog.repository.locale'
+            - '@akeneo_file_storage.repository.file_info'

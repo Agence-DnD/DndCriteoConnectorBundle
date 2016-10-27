@@ -1,0 +1,38 @@
+{
+  "name": "agencednd/criteo-connector-bundle",
+  "type": "symfony-bundle",
+  "description": "Dnd bundle to export products from Akeneo PIM to Criteo",
+  "keywords": ["pim", "dnd", "ecommerce", "e-commerce", "criteo", "feed", "connector", "xml", "flow", "akeneo", "mapping"],
+  "homepage": "http://dnd.fr",
+  "license": "OSL-3.0",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name":     "Agence Dn'D",
+      "email":    "contact@dnd.fr",
+      "homepage": "http://www.dnd.fr/"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/akeneo/pim-community-dev.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/akeneo/platform.git"
+    }
+  ],
+  "require": {
+    "akeneo/pim-community-dev": "~1.5@stable"
+  },
+  "autoload": {
+    "psr-4": {
+      "Dnd\\Bundle\\CriteoConnectorBundle\\": ""
+    }
+  },
+  "config": {
+    "bin-dir": "bin"
+  },
+  "minimum-stability": "dev"
+}
