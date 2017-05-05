@@ -1,0 +1,11 @@
+parameters:
+    dnd_criteo_connector.rest.controller.class: Dnd\Bundle\CriteoConnectorBundle\Controller\RestController
+
+services:
+    dnd_criteo_connector.rest.controller:
+        class: '%dnd_criteo_connector.rest.controller.class%'
+        scope: request
+        arguments:
+            - '@pim_catalog.repository.attribute'
+            - '@pim_catalog.repository.currency'
+

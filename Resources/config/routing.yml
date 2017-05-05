@@ -1,0 +1,9 @@
+dnd_criteo_connector_attributes_list:
+    path: /attributes
+    defaults: { _controller: dnd_criteo_connector.rest.controller:listAttributesAction}
+    methods: [GET]
+dnd_criteo_connector_available_currencies_list:
+    path: /available-currencies
+    defaults: { _controller: dnd_criteo_connector.rest.controller:listAvailableCurrenciesAction}
+    methods: [GET]
+

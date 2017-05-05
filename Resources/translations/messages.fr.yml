@@ -1,45 +1,6 @@
 dnd_criteo_connector:
-  jobs:
-    criteo_xml_product_export:
-      title:        Export des produits pour Criteo en XML
-      export.title: Export des produits pour Criteo
-  export:
-    locale:
-      label: Langue
-      help:  Langue des produits
-    currency:
-      label: Devise
-      help:  Devise des prix produit
-    id:
-      label: Id
-      help:  Attribut utilisé pour l'id Criteo
-    name:
-      label: Nom
-      help:  Attribut utilisé pour le nom des produits Criteo
-    productUrl:
-      label: Url produit
-      help:  Attribut utilisé pour l'url des produits Criteo
-    smallImage:
-      label: Petite image
-      help:  Attribut utilisé pour les petites images produit Criteo
-    bigImage:
-      label: Grande image
-      help:  Attribut utilisé pour les grandes images produit Criteo
-    description:
-      label: Description
-      help:  Attribut utilisé pour la description des produits Criteo
-    price:
-      label: Prix
-      help:  Attribut utilisé pour le prix des produits Criteo
-    retailPrice:
-      label: Prix au détail
-      help:  Attribut utilisé pour le prix au détail des produits Criteo
-    recommendable:
-      label: Recommendable
-      help:  Attribut utilisé pour savoir si les produits sont recommendables Criteo (doit être un booléen)
-    includeCategories:
-      label: Inclure les catégories
-      help:  Voulez vous inclure les catégories pour Criteo (profondeur de trois maximum)
-    pimMediaUrl:
-      label: PIM URL
-      help:  Renseigner l'url du PIM si vous utilisez des attributs de type image (exemple : http://www.pimdomaine.com/)
+batch_jobs:
+  criteo_xml_product_export:
+    label: Export des produits pour Criteo en xml
+    validation.label: Validation du fichier
+    export.label: Export des produits pour Criteo

@@ -1,0 +1,42 @@
+dnd_criteo_connector:
+  form:
+    job_instance:
+      tab:
+        criteo:
+          title: Criteo configuration
+          currency:
+            title: Devise
+            help:  Devise des prix produit
+          id:
+            title: ID
+            help: Attribut utilisé pour l'id Criteo
+          name:
+            title: Nom
+            help:  Attribut utilisé pour le nom des produits Criteo
+          productUrl:
+            title: Url produit
+            help:  Attribut utilisé pour l'url des produits Criteo
+          smallImage:
+            title: Petite image
+            help:  Attribut utilisé pour les petites images produit Criteo
+          bigImage:
+            title: Grande image
+            help:  Attribut utilisé pour les grandes images produit Criteo
+          description:
+            title: Description
+            help:  Attribut utilisé pour la description des produits Criteo
+          price:
+            title: Prix
+            help:  Attribut utilisé pour le prix Criteo
+          retailPrice:
+            title: Prix au détail
+            help:  Attribut utilisé pour le prix au détail des produits Criteo
+          recommendable:
+            title: Recommendable
+            help:  Attribut utilisé pour les produits recommandables Criteo
+          includeCategories:
+            title: Inclure les catégories
+            help:  Voulez vous inclure les catégories pour Criteo (profondeur de trois maximum)
+          pimMediaUrl:
+            title: PIM URL
+            help:  Renseigner l'url du PIM si vous utilisez des attributs de type image (exemple : http://www.pimdomaine.com/)
