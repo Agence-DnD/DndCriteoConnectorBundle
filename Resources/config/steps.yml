@@ -1,0 +1,11 @@
+services:
+    # defines the step
+    dnd_criteo_connector.step.xml_product.export:
+        class: '%pim_connector.step.item_step.class%'
+        arguments:
+            - 'export_product_step'
+            - '@event_dispatcher'
+            - '@akeneo_batch.job_repository'
+            - '@pim_connector.reader.database.product'
+            - '@pim_connector.processor.normalization.product'
+            - '@dnd_criteo_connector.writer.file.xml_product'

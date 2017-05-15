@@ -1,0 +1,42 @@
+dnd_criteo_connector:
+  form:
+    job_instance:
+      tab:
+        criteo:
+          title: Criteo configuration
+          currency:
+            title: Currency
+            help:  Products price currency
+          id:
+            title: Id
+            help: Attribute use for Criteo id
+          name:
+            title: Name
+            help:  Attribute use for Criteo name
+          productUrl:
+            title: Product url
+            help:  Attribute use for Criteo product url
+          smallImage:
+            title: Small image
+            help:  Attribute use for Criteo small image
+          bigImage:
+            title: Big image
+            help:  Attribute use for Criteo big image
+          description:
+            title: Description
+            help:  Attribute use for Criteo description
+          price:
+            title: Price
+            help:  Attribute use for Criteo price
+          retailPrice:
+            title: Retail Price
+            help:  Attribute use for Criteo retail price
+          recommendable:
+            title: Recommendable
+            help:  Attribute use for Criteo recommendable (must be boolean)
+          includeCategories:
+            title: Include categories
+            help:  Choose if you want to include categories in xml (depth of three maximum)
+          pimMediaUrl:
+            title: PIM URL
+            help:  Fill the url of your PIM if you use image attributes (example : http://www.pimdomain.com/)

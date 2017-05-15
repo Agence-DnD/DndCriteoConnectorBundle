@@ -25,13 +25,13 @@ $ curl -sS https://getcomposer.org/installer | php
 
 Then, install DnD-CriteoConnectorBundle with composer:
 
-In your ```composer.json```, add the following code:
+In your ```composer.json```, add the following code dependending on your Akeneo PIM version:
 
 * In `require`:
 
 ```json
 {
-    "agencednd/criteo-connector-bundle": "1.0.*"
+    "agencednd/criteo-connector-bundle": "1.2.*"
 }
 ```
 
@@ -43,6 +43,12 @@ $php composer.phar require agencednd/criteo-connector-bundle
 Enable the bundle in ```app/AppKernel.php``` file, in the ```registerBundles``` function, before the line ```return $bundles```:
 ```php
 $bundles[] = new Dnd\Bundle\CriteoConnectorBundle\DndCriteoConnectorBundle();
+```
+Add the route in ```app/routing.yml```file, under the _pim_reference_data_ node:
+```yml
+dnd_criteo_connector:
+    prefix: /criteo-connector
+    resource: "@DndCriteoConnectorBundle/Resources/config/routing.yml"
 ```
 
 ## Configuration
@@ -58,6 +64,6 @@ $ ln -s /my/pim/installation/dir/web/file_storage /my/pim/installation/dir/app/f
 
 * Go to _Spread_ > _Export profiles_ and then create your _CriteoConnectorBundle_ export products for Criteo profile
 * Map your attributes to Criteo attributes (leave empty if you don't use one of them, see this [Article](http://support.datafeedwatch.com/hc/en-us/articles/200106112-Criteo) to know the required attributes)
-* You need to have products complete at 100%. Only them will be exported.
+
 ## About us
 Founded by lovers of innovation and design, [Agence Dn'D] (http://www.dnd.fr) assists companies in the creation and development of customized digital (open source) solutions for web and E-commerce since 2004.
