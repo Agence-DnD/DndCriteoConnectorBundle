@@ -1,3 +1,9 @@
+batch_jobs:
+  criteo_export_job:
+    label: Export des produits pour Criteo en XML
+
+criteo_export_job: Export des produits pour Criteo en XML
+
 dnd_criteo_connector:
   jobs:
     criteo_xml_product_export:
@@ -43,3 +49,5 @@ dnd_criteo_connector:
     pimMediaUrl:
       label: PIM URL
       help:  Renseigner l'url du PIM si vous utilisez des attributs de type image (exemple : http://www.pimdomaine.com/)
+
+

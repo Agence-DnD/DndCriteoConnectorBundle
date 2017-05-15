@@ -1,0 +1,15 @@
+parameters:
+    dnd_criteo_connector.connector_name.criteo: 'Dnd Criteo Connector'
+    dnd_criteo_connector.job_name.criteo_product_export: 'criteo_export_job'
+
+services:
+    dnd_criteo_connector.job.export_xml:
+        class: '%pim_connector.job.simple_job.class%'
+        arguments:
+            - '%dnd_criteo_connector.job_name.criteo_product_export%'
+            - '@event_dispatcher'
+            - '@akeneo_batch.job_repository'
+            -
+                - '@dnd_criteo_connector.step.xml_product.export'
+        tags:
+            - { name: akeneo_batch.job, connector: '%dnd_criteo_connector.connector_name.criteo%', type: '%pim_connector.job.export_type%' }

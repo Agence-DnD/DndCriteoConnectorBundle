@@ -1,3 +1,9 @@
+batch_jobs:
+  criteo_export_job:
+    label: Export products for Criteo in XML
+
+criteo_export_job: Export products for Criteo in XML
+
 dnd_criteo_connector:
   jobs:
     criteo_xml_product_export:

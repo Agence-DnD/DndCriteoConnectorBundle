@@ -2,20 +2,20 @@
 
 namespace Dnd\Bundle\CriteoConnectorBundle\Writer\File;
 
+use Akeneo\Component\Batch\Job\JobParameters;
 use Akeneo\Component\Batch\Job\RuntimeErrorException;
 use Akeneo\Component\Buffer\BufferFactory;
 use Akeneo\Component\Buffer\BufferInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Pim\Component\Connector\Writer\File\AbstractFileWriter;
 use Pim\Component\Connector\Writer\File\ArchivableWriterInterface;
-use Pim\Component\Connector\Writer\File\FilePathResolverInterface;
 use Pim\Component\Catalog\Repository\AttributeRepositoryInterface;
-use Pim\Bundle\CatalogBundle\Manager\ChannelManager;
+use Pim\Component\Catalog\Repository\ChannelRepositoryInterface;
 use Akeneo\Component\Classification\Repository\CategoryRepositoryInterface;
 use Pim\Component\Catalog\Repository\LocaleRepositoryInterface;
-use Pim\Bundle\BaseConnectorBundle\Validator\Constraints\Channel;
+use Pim\Component\Connector\Validator\Constraints\Channel;
 use Akeneo\Component\Batch\Item\InvalidItemException;
-use Pim\Bundle\CatalogBundle\AttributeType\AttributeTypes;
+use Pim\Component\Catalog\AttributeTypes;
 use Akeneo\Component\FileStorage\Repository\FileInfoRepositoryInterface;
 
 /**
@@ -80,8 +80,8 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
      */
     protected $channel;
 
-    /** @var ChannelManager */
-    protected $channelManager;
+    /** @var ChannelRepositoryInterface */
+    protected $channelRepository;
 
     /** @var LocaleRepositoryInterface */
     protected $localeRepository;
@@ -96,25 +96,30 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
     protected $maxCategoriesDepth;
 
     /**
-     * @param FilePathResolverInterface    $filePathResolver
-     * @param BufferFactory                $bufferFactory
+     * @param BufferFactory $bufferFactory
      * @param AttributeRepositoryInterface $attributeRepository
-     * @param ChannelManager               $channelManager
-     * @param CategoryRepositoryInterface  $categoryRepository
-     * @param LocaleRepositoryInterface    $localeRepository
-     * @param FileInfoRepositoryInterface   $fileInfoRepository
+     * @param ChannelRepositoryInterface $channelRepository
+     * @param CategoryRepositoryInterface $categoryRepository
+     * @param LocaleRepositoryInterface $localeRepository
+     * @param FileInfoRepositoryInterface $fileInfoRepository
      */
-    public function __construct(FilePathResolverInterface $filePathResolver, BufferFactory $bufferFactory, AttributeRepositoryInterface $attributeRepository, ChannelManager $channelManager, CategoryRepositoryInterface $categoryRepository, LocaleRepositoryInterface $localeRepository, FileInfoRepositoryInterface $fileInfoRepository)
-    {
-        parent::__construct($filePathResolver);
+    public function __construct(
+        BufferFactory $bufferFactory,
+        AttributeRepositoryInterface $attributeRepository,
+        ChannelRepositoryInterface $channelRepository,
+        CategoryRepositoryInterface $categoryRepository,
+        LocaleRepositoryInterface $localeRepository,
+        FileInfoRepositoryInterface $fileInfoRepository
+    ) {
+        parent::__construct();
 
-        $this->buffer               = $bufferFactory->create();
-        $this->attributeRepository  = $attributeRepository;
-        $this->channelManager       = $channelManager;
-        $this->categoryRepository   = $categoryRepository;
-        $this->localeRepository     = $localeRepository;
-        $this->fileInfoRepository   = $fileInfoRepository;
-        $this->maxCategoriesDepth   = 3;
+        $this->buffer = $bufferFactory->create();
+        $this->attributeRepository = $attributeRepository;
+        $this->channelRepository = $channelRepository;
+        $this->categoryRepository = $categoryRepository;
+        $this->localeRepository = $localeRepository;
+        $this->fileInfoRepository = $fileInfoRepository;
+        $this->maxCategoriesDepth = 3;
     }
 
     /**
@@ -126,276 +131,20 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
     }
 
     /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param mixed $id
-     * @return XmlProductWriter
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return XmlProductWriter
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getProductUrl()
-    {
-        return $this->productUrl;
-    }
-
-    /**
-     * @param string $productUrl
-     * @return XmlProductWriter
-     */
-    public function setProductUrl($productUrl)
-    {
-        $this->productUrl = $productUrl;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBigImage()
-    {
-        return $this->bigImage;
-    }
-
-    /**
-     * @param string $bigImage
-     * @return XmlProductWriter
-     */
-    public function setBigImage($bigImage)
-    {
-        $this->bigImage = $bigImage;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSmallImage()
-    {
-        return $this->smallImage;
-    }
-
-    /**
-     * @param string $smallImage
-     * @return XmlProductWriter
-     */
-    public function setSmallImage($smallImage)
-    {
-        $this->smallImage = $smallImage;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     * @return XmlProductWriter
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPrice()
-    {
-        return $this->price;
-    }
-
-    /**
-     * @param string $price
-     * @return XmlProductWriter
-     */
-    public function setPrice($price)
-    {
-        $this->price = $price;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRetailPrice()
-    {
-        return $this->retailPrice;
-    }
-
-    /**
-     * @param string $retailPrice
-     * @return XmlProductWriter
-     */
-    public function setRetailPrice($retailPrice)
-    {
-        $this->retailPrice = $retailPrice;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRecommendable()
-    {
-        return $this->recommendable;
-    }
-
-    /**
-     * @param string $recommendable
-     * @return XmlProductWriter
-     */
-    public function setRecommendable($recommendable)
-    {
-        $this->recommendable = $recommendable;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getIncludeCategories()
-    {
-        return $this->includeCategories;
-    }
-
-    /**
-     * @param int $includeCategories
-     * @return XmlProductWriter
-     */
-    public function setIncludeCategories($includeCategories)
-    {
-        $this->includeCategories = $includeCategories;
-
-        return $this;
-    }
-
-    /**
-     * Return PimMediaUrl with rtrim to be sur that there is a / at the end of the url
-     * @return string
-     */
-    public function getPimMediaUrl()
-    {
-        return rtrim($this->pimMediaUrl, '/') . '/';
-    }
-
-    /**
-     * @param string $pimMediaUrl
-     * @return XmlProductWriter
-     */
-    public function setPimMediaUrl($pimMediaUrl)
-    {
-        $this->pimMediaUrl = $pimMediaUrl;
-
-        return $this;
-    }
-
-    /**
-     * Set channel
-     *
-     * @param string $channelCode Channel code
-     *
-     * @return $this
-     */
-    public function setChannel($channelCode)
-    {
-        $this->channel = $channelCode;
-
-        return $this;
-    }
-
-    /**
-     * Get channel
-     *
-     * @return string Channel code
-     */
-    public function getChannel()
-    {
-        return $this->channel;
-    }
-
-    /**
-     * Set locale
-     *
-     * @param string $localeCode Locale code
-     *
-     * @return $this
-     */
-    public function setLocale($localeCode)
-    {
-        $this->locale = $localeCode;
-
-        return $this;
-    }
-
-    /**
-     * Get locale
-     *
-     * @return string Locale code
-     */
-    public function getLocale()
-    {
-        return $this->locale;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function write(array $items)
     {
+        $parameters = $this->stepExecution->getJobParameters();
         if (false === file_exists($this->getPath())) {
             $xml = new \DOMDocument('1.0', 'utf-8');
             $xml->formatOutput = true;
             $xml->preserveWhiteSpace = false;
             $products = $xml->createElement('products');
             $xml->appendChild($products);
+
         } else {
-            $xml = new \DOMDocument('1.0','utf-8');
+            $xml = new \DOMDocument('1.0', 'utf-8');
             $content = file_get_contents($this->getPath());
             $content = html_entity_decode($content);
             $xml->formatOutput = true;
@@ -404,24 +153,25 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
             $products = $xml->getElementsByTagName("products")->item(0);
         }
         foreach ($items as $item) {
-            $item['product'] = $this->formatProductArray($item['product']);
+            $item['product'] = $this->formatProductArray($item['values']);
+            unset($item['values']);
             $product = $xml->createElement('product');
-            $product->setAttribute('id', $item['product'][$this->getId()]);
-            $this->addItemChild('name', $item['product'], $this->getName(), $product, $xml);
-            $this->addItemChild('description', $item['product'], $this->getDescription(), $product, $xml);
-            $this->addItemChild('producturl', $item['product'], $this->getProductUrl(), $product, $xml);
-            $this->addItemChild('smallimage', $item['product'], $this->getSmallImage(), $product, $xml);
-            $this->addItemChild('bigmage', $item['product'], $this->getBigImage(), $product, $xml);
-            $this->addItemChild('price', $item['product'], $this->getPrice(), $product, $xml);
-            $this->addItemChild('retailprice', $item['product'], $this->getRetailPrice(), $product, $xml);
-            $this->addItemChild('recommendable', $item['product'], $this->getRecommendable(), $product, $xml);
-            if ($this->getIncludeCategories()) {
-                $productCategories      = $this->removeCategoriesNotInChannel($item['product']['categories']);
+            $product->setAttribute('id', $item['product'][$parameters->get('id')]);
+            $this->addItemChild('name', $item['product'], $parameters->get('name'), $product, $xml);
+            $this->addItemChild('description', $item['product'], $parameters->get('description'), $product, $xml);
+            $this->addItemChild('producturl', $item['product'], $parameters->get('productUrl'), $product, $xml);
+            $this->addItemChild('smallimage', $item['product'], $parameters->get('smallImage'), $product, $xml);
+            $this->addItemChild('bigimage', $item['product'], $parameters->get('bigImage'), $product, $xml);
+            $this->addItemChild('price', $item['product'], $parameters->get('price'), $product, $xml);
+            $this->addItemChild('retailprice', $item['product'], $parameters->get('retailPrice'), $product, $xml);
+            $this->addItemChild('recommendable', $item['product'], $parameters->get('recommendable'), $product, $xml);
+            if ($parameters->get('includeCategories')) {
+                $productCategories = $this->removeCategoriesNotInChannel($item['categories']);
                 $productCategoriesLabel = $this->getCategoriesLabel($productCategories);
                 $i = 1;
                 foreach ($productCategoriesLabel as $categoryLabel) {
                     if ($i <= $this->maxCategoriesDepth) {
-                        $product->appendChild($xml->createElement('categoryid' . $i, $categoryLabel));
+                        $product->appendChild($xml->createElement('categoryid'.$i, $categoryLabel));
                     }
                     $i++;
                 }
@@ -447,17 +197,17 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
     /**
      * Add new node to xml item node
      *
-     * @param string       $nodeName
-     * @param array        $productData
-     * @param string       $key
-     * @param \DomElement  $product
+     * @param string $nodeName
+     * @param array $productData
+     * @param string $key
+     * @param \DomElement $product
      * @param \DomDocument $xml
      * @return boolean|\DOMElement
      */
     protected function addItemChild($nodeName, $productData, $key, $product, $xml)
     {
         if (!isset($productData[$key])) {
-            $this->setItemError($productData, 'job_execution.summary.undefined_index ' . $key);
+            $this->setItemError($productData, 'job_execution.summary.undefined_index '.$key);
         }
 
         if ($productData[$key] != '') {
@@ -470,14 +220,94 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
     }
 
     /**
+     * Get label value for select and multiselect attributes
+     * Remove locale / channel in product array keys
+     * Remove html characters, encode special html characters on textarea /text attributes
+     * Hack to prevent undefined index on product array if attribute mapping is not specified
+     * Create url for product images
+     *
+     * @param  array $product
+     * @return array $newProduct
+     */
+    protected function formatProductArray($product)
+    {
+        $parameters = $this->stepExecution->getJobParameters()->all();
+        $parameters['locale'] = $parameters['filters']['structure']['locales'][0];
+
+        unset($parameters['with_media']);
+
+        $newProduct = [];
+        foreach ($product as $key => $value) {
+            if (!in_array($key,$parameters)) {
+                continue;
+            }
+            $value = $product[$key][0]['data'];
+            $product[$key] = $value;
+            $newKey = explode('-', $key);
+            $newProduct[$newKey[0]] = $product[$key];
+            $attribute = $this->attributeRepository->findOneByIdentifier($newKey[0]);
+            if ($attribute === null) {
+                continue;
+            }
+            if ($attribute->getAttributeType() == AttributeTypes::IMAGE) {
+                $fileName = basename($value['originalFilename']);
+                $file = $this->fileInfoRepository->findOneBy(['originalFilename' => $fileName]);
+                if ($file !== null) {
+                    $newProduct[$newKey[0]] = rtrim($parameters['pimMediaUrl'], '/') .'/file_storage/catalog/'.$file->getKey();
+                }
+            } elseif (in_array($attribute->getAttributeType(), [AttributeTypes::TEXT, AttributeTypes::TEXTAREA])) {
+                $newProduct[$newKey[0]] = htmlentities(html_entity_decode($value));
+            } elseif (in_array(
+                $attribute->getAttributeType(),
+                [AttributeTypes::OPTION_MULTI_SELECT, AttributeTypes::OPTION_SIMPLE_SELECT]
+            )) {
+                foreach ($attribute->getOptions() as $option) {
+                    if ($option->getCode() == $value) {
+                        $newProduct[$newKey[0]] = $option->setLocale($parameters['locale'])->getOptionValue()->getLabel();
+                        break;
+                    }
+                }
+            } elseif ( $attribute->getAttributeType() == AttributeTypes::PRICE_COLLECTION) {
+                foreach ($value as $index => $data) {
+                    if ($data['currency'] == $parameters['currency']) {
+                        $value = $data['data'];
+                        $newProduct[$newKey[0]] = $value;
+                        break;
+                    }
+                }
+            }
+        }
+
+        $parameters = [
+            $parameters['id'] => '',
+            $parameters['name'] => '',
+            $parameters['description'] => '',
+            $parameters['productUrl'] => '',
+            $parameters['smallImage'] => '',
+            $parameters['bigImage'] => '',
+            $parameters['price'] => '',
+            $parameters['retailPrice'] => '',
+            $parameters['recommendable'] => '',
+        ];
+
+        $missingValues = array_diff_key($parameters, $newProduct);
+
+        $newProduct += $missingValues;
+
+        $newProduct[''] = '';
+
+        return $newProduct;
+    }
+
+    /**
      * Remove categories code which are not in root category tree associated to current channel
      * @param  array $categories
      * @return array
      */
     protected function removeCategoriesNotInChannel($categories)
     {
-        $categories    = explode(',', $categories);
-        $channel       = $this->channelManager->getChannelByCode($this->getChannel());
+        $parameters = $parameters = $this->stepExecution->getJobParameters();
+        $channel = $this->getChannelByCode($parameters->get('filters')['structure']['scope']);
 
         return array_intersect($this->getCategories($channel->getCategory()->getChildren()), $categories);
     }
@@ -496,7 +326,7 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
         }
         foreach ($children as $child) {
             $allCategories[] = $child->getCode();
-            if($child->hasChildren()) {
+            if ($child->hasChildren()) {
                 $allCategories = array_merge($allCategories, $this->getCategories($child->getChildren(), $categories));
             }
         }
@@ -511,171 +341,25 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
      */
     protected function getCategoriesLabel($categories)
     {
+        $parameters = $this->stepExecution->getJobParameters();
         $labels = [];
         foreach ($this->categoryRepository->getCategoriesByCodes($categories) as $category) {
-            $labels[] = $category->setLocale($this->getLocale())->getLabel();
+            $labels[] = $category->setLocale($parameters->get('filters')['structure']['locales'][0])->getLabel();
         }
 
         return $labels;
     }
 
-    public function getConfigurationFields()
-    {
-        return array_merge(
-                parent::getConfigurationFields(),
-                [
-                    'id' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.id.label',
-                            'help'     => 'dnd_criteo_connector.export.id.help',
-                            'required' => true,
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
-                    ],
-                    'name' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.name.label',
-                            'help'     => 'dnd_criteo_connector.export.name.help',
-                            'required' => true,
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
-                    ],
-                    'productUrl' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.productUrl.label',
-                            'help'     => 'dnd_criteo_connector.export.productUrl.help',
-                            'required' => true,
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
-                    ],
-                    'smallImage' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.smallImage.label',
-                            'help'     => 'dnd_criteo_connector.export.smallImage.help',
-                            'required' => true,
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
-                    ],
-                    'bigImage' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.bigImage.label',
-                            'help'     => 'dnd_criteo_connector.export.bigImage.help',
-                            'required' => true,
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
-                    ],
-                    'description' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.description.label',
-                            'help'     => 'dnd_criteo_connector.export.description.help',
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
-                    ],
-                    'price' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.price.label',
-                            'help'     => 'dnd_criteo_connector.export.price.help',
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
-                    ],
-                    'retailPrice' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.retailPrice.label',
-                            'help'     => 'dnd_criteo_connector.export.retailPrice.help',
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
-                    ],
-                    'recommendable' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.recommendable.label',
-                            'help'     => 'dnd_criteo_connector.export.recommendable.help',
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
-                    ],
-                    'includeCategories' => [
-                        'type'    => 'switch',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.includeCategories.label',
-                            'help'     => 'dnd_criteo_connector.export.includeCategories.help'
-                        ]
-                    ],
-                    'channel' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'choices'  => $this->channelManager->getChannelChoices(),
-                            'required' => true,
-                            'select2'  => true,
-                            'label'    => 'pim_base_connector.export.channel.label',
-                            'help'     => 'pim_base_connector.export.channel.help'
-                        ]
-                    ],
-                    'locale' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'choices'  => $this->getLocaleCodes(),
-                            'required' => true,
-                            'select2'  => true,
-                            'label'    => 'dnd_criteo_connector.export.locale.label',
-                            'help'     => 'dnd_criteo_connector.export.locale.help'
-                        ]
-                    ],
-                    'pimMediaUrl' => [
-                        'options' => [
-                            'label'    => 'pim_base_connector.export.pimMediaUrl.label',
-                            'help'     => 'pim_base_connector.export.pimMediaUrl.help'
-                        ]
-                    ],
-                ]
-            );
-    }
-
     /**
-     * Get locale codes for select option
+     * Get channel by code
      *
-     * @return array
-     */
-    protected function getLocaleCodes()
-    {
-        $choices = [];
-        foreach ($this->localeRepository->getActivatedLocales() as $locale) {
-            $choices[$locale->getCode()] = $locale->getCode();
-        }
-
-        return $choices;
-    }
-
-    /**
-     * Retrieve attributes code for select option
+     * @param string $code
      *
-     * @return array[] $choices
+     * @return ChannelInterface
      */
-    protected function getAttributesChoices()
+    public function getChannelByCode($code)
     {
-        $choices = [];
-        $choices[''] = '';
-        foreach ($this->attributeRepository->getAttributesAsArray() as $attribute) {
-            $choices[$attribute['code']] = $attribute['code'];
-        }
-
-        return $choices;
+        return $this->channelRepository->findOneBy(['code' => $code]);
     }
 
     /**
@@ -691,47 +375,5 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
         }
 
         throw new InvalidItemException($error, $item);
-    }
-
-    /**
-     * Get label value for select and multiselect attributes
-     * Remove locale / channel in product array keys
-     * Remove html characters, encode special html characters on textarea /text attributes
-     * Hack to prevent undefined index on product array if attribute mapping is not specified
-     * Create url for product images
-     *
-     * @param  array $product
-     * @return array $newProduct
-     */
-    protected function formatProductArray($product)
-    {
-        $newProduct = [];
-        foreach ($product as $key => $value) {
-            $newKey = explode('-', $key);
-            $newProduct[$newKey[0]] = $product[$key];
-            $attribute = $this->attributeRepository->findOneByIdentifier($newKey[0]);
-            if ($attribute === null) {
-                continue;
-            }
-            if ($attribute->getAttributeType() == AttributeTypes::IMAGE) {
-                $fileName = basename($value);
-                $file     = $this->fileInfoRepository->findOneBy(['originalFilename' => $fileName]);
-                if ($file !== null) {
-                    $newProduct[$newKey[0]] = $this->getPimMediaUrl() . 'file_storage/catalog/' . $file->getKey();
-                }
-            } elseif (in_array($attribute->getAttributeType(), [AttributeTypes::TEXT, AttributeTypes::TEXTAREA])) {
-                $newProduct[$newKey[0]] = htmlentities(html_entity_decode($value));
-            } elseif (in_array($attribute->getAttributeType(), [AttributeTypes::OPTION_MULTI_SELECT, AttributeTypes::OPTION_SIMPLE_SELECT])) {
-                foreach ($attribute->getOptions() as $option) {
-                    if($option->getCode() == $value) {
-                        $newProduct[$newKey[0]] = $option->setLocale($this->getLocale())->getOptionValue()->getLabel();
-                        break;
-                    }
-                }
-            }
-        }
-        $newProduct[''] = '';
-
-        return $newProduct;
     }
 }

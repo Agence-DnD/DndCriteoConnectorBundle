@@ -1,0 +1,15 @@
+parameters:
+    dnd_criteo_connector.job.job_parameters.form_configuration_provider.product_xml_export.class: Dnd\Bundle\CriteoConnectorBundle\Job\JobParameters\FormConfigurationProvider\CriteoExport
+
+services:
+    dnd_criteo_connector.job.job_parameters.form_configuration_provider.product_xml_export:
+      class: %dnd_criteo_connector.job.job_parameters.form_configuration_provider.product_xml_export.class%
+      arguments:
+          - '%pim_catalog.localization.decimal_separators%'
+          - '%pim_catalog.localization.date_formats%'
+          - '@pim_catalog.repository.attribute'
+          - '@pim_catalog.repository.currency'
+          -
+              - 'criteo_export_job'
+      tags:
+          - { name: pim_import_export.job_parameters.form_configuration_provider }

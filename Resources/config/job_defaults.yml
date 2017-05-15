@@ -1,0 +1,13 @@
+parameters:
+    dnd_criteo_connector.job.job_parameters.default_values_provider.product_xml_export.class: Dnd\Bundle\CriteoConnectorBundle\Job\JobParameters\DefaultValuesProvider\CriteoExport
+
+services:
+    dnd_criteo_connector.job.job_parameters.default_values_provider.product_xml_export:
+        class: %dnd_criteo_connector.job.job_parameters.default_values_provider.product_xml_export.class%
+        arguments:
+            - '@pim_catalog.repository.channel'
+            - '@pim_catalog.repository.locale'
+            -
+                - 'criteo_export_job'
+        tags:
+            - { name: akeneo_batch.job.job_parameters.default_values_provider }
