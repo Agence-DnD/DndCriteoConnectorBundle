@@ -86,17 +86,26 @@ class ProductToFlatArrayProcessor extends AbstractConfigurableStepElement implem
      * @param LocaleRepositoryInterface   $localeRepository
      * @param CurrencyRepositoryInterface $currencyRepository
      */
-    public function __construct(Serializer $serializer, ChannelManager $channelManager, ProductBuilderInterface $productBuilder, array $mediaAttributeTypes, array $priceAttributeTypes, array $decimalSeparators, array $dateFormats, LocaleRepositoryInterface $localeRepository, CurrencyRepositoryInterface $currencyRepository)
-    {
-        $this->serializer          = $serializer;
-        $this->channelManager      = $channelManager;
+    public function __construct(
+        Serializer $serializer,
+        ChannelManager $channelManager,
+        ProductBuilderInterface $productBuilder,
+        array $mediaAttributeTypes,
+        array $priceAttributeTypes,
+        array $decimalSeparators,
+        array $dateFormats,
+        LocaleRepositoryInterface $localeRepository,
+        CurrencyRepositoryInterface $currencyRepository
+    ) {
+        $this->serializer = $serializer;
+        $this->channelManager = $channelManager;
         $this->mediaAttributeTypes = $mediaAttributeTypes;
         $this->priceAttributeTypes = $priceAttributeTypes;
-        $this->decimalSeparators   = $decimalSeparators;
-        $this->dateFormats         = $dateFormats;
-        $this->productBuilder      = $productBuilder;
-        $this->localeRepository    = $localeRepository;
-        $this->currencyRepository  = $currencyRepository;
+        $this->decimalSeparators = $decimalSeparators;
+        $this->dateFormats = $dateFormats;
+        $this->productBuilder = $productBuilder;
+        $this->localeRepository = $localeRepository;
+        $this->currencyRepository = $currencyRepository;
     }
 
     /**
@@ -105,12 +114,16 @@ class ProductToFlatArrayProcessor extends AbstractConfigurableStepElement implem
     public function process($product)
     {
         $contextChannel = $this->channelManager->getChannelByCode($this->channel);
-        $this->productBuilder->addMissingProductValues($product, [$contextChannel], [$this->localeRepository->findOneBy(['code' => $this->getLocale()])]);
+        $this->productBuilder->addMissingProductValues(
+            $product,
+            [$contextChannel],
+            [$this->localeRepository->findOneBy(['code' => $this->getLocale()])]
+        );
 
         $this->removePricesNotInCurrency($product);
 
         $data['media'] = [];
-        $mediaValues   = $this->getMediaProductValues($product);
+        $mediaValues = $this->getMediaProductValues($product);
 
         foreach ($mediaValues as $mediaValue) {
             $data['media'][] = $this->serializer->normalize(
@@ -131,15 +144,15 @@ class ProductToFlatArrayProcessor extends AbstractConfigurableStepElement implem
     public function getConfigurationFields()
     {
         return [
-            'channel' => [
+            'channel'          => [
                 'type'    => 'choice',
                 'options' => [
                     'choices'  => $this->channelManager->getChannelChoices(),
                     'required' => true,
                     'select2'  => true,
                     'label'    => 'pim_base_connector.export.channel.label',
-                    'help'     => 'pim_base_connector.export.channel.help'
-                ]
+                    'help'     => 'pim_base_connector.export.channel.help',
+                ],
             ],
             'decimalSeparator' => [
                 'type'    => 'choice',
@@ -148,10 +161,10 @@ class ProductToFlatArrayProcessor extends AbstractConfigurableStepElement implem
                     'required' => true,
                     'select2'  => true,
                     'label'    => 'pim_base_connector.export.decimalSeparator.label',
-                    'help'     => 'pim_base_connector.export.decimalSeparator.help'
-                ]
+                    'help'     => 'pim_base_connector.export.decimalSeparator.help',
+                ],
             ],
-            'dateFormat' => [
+            'dateFormat'       => [
                 'type'    => 'choice',
                 'options' => [
                     'choices'  => $this->dateFormats,
@@ -159,27 +172,27 @@ class ProductToFlatArrayProcessor extends AbstractConfigurableStepElement implem
                     'select2'  => true,
                     'label'    => 'pim_base_connector.export.dateFormat.label',
                     'help'     => 'pim_base_connector.export.dateFormat.help',
-                ]
+                ],
             ],
-            'locale' => [
+            'locale'           => [
                 'type'    => 'choice',
                 'options' => [
                     'choices'  => $this->getLocaleCodes(),
                     'required' => true,
                     'select2'  => true,
                     'label'    => 'dnd_criteo_connector.export.locale.label',
-                    'help'     => 'dnd_criteo_connector.export.locale.help'
-                ]
+                    'help'     => 'dnd_criteo_connector.export.locale.help',
+                ],
             ],
-            'currency' => [
+            'currency'         => [
                 'type'    => 'choice',
                 'options' => [
                     'choices'  => $this->getCurrencyCodes(),
                     'required' => true,
                     'select2'  => true,
                     'label'    => 'dnd_criteo_connector.export.currency.label',
-                    'help'     => 'dnd_criteo_connector.export.currency.help'
-                ]
+                    'help'     => 'dnd_criteo_connector.export.currency.help',
+                ],
             ],
         ];
     }
@@ -341,7 +354,7 @@ class ProductToFlatArrayProcessor extends AbstractConfigurableStepElement implem
         foreach ($this->currencyRepository->getActivatedCurrencies() as $currency) {
             $choices[$currency->getCode()] = $currency->getCode();
         }
-        
+
         return $choices;
     }
 

@@ -102,19 +102,26 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
      * @param ChannelManager               $channelManager
      * @param CategoryRepositoryInterface  $categoryRepository
      * @param LocaleRepositoryInterface    $localeRepository
-     * @param FileInfoRepositoryInterface   $fileInfoRepository
+     * @param FileInfoRepositoryInterface  $fileInfoRepository
      */
-    public function __construct(FilePathResolverInterface $filePathResolver, BufferFactory $bufferFactory, AttributeRepositoryInterface $attributeRepository, ChannelManager $channelManager, CategoryRepositoryInterface $categoryRepository, LocaleRepositoryInterface $localeRepository, FileInfoRepositoryInterface $fileInfoRepository)
-    {
+    public function __construct(
+        FilePathResolverInterface $filePathResolver,
+        BufferFactory $bufferFactory,
+        AttributeRepositoryInterface $attributeRepository,
+        ChannelManager $channelManager,
+        CategoryRepositoryInterface $categoryRepository,
+        LocaleRepositoryInterface $localeRepository,
+        FileInfoRepositoryInterface $fileInfoRepository
+    ) {
         parent::__construct($filePathResolver);
 
-        $this->buffer               = $bufferFactory->create();
-        $this->attributeRepository  = $attributeRepository;
-        $this->channelManager       = $channelManager;
-        $this->categoryRepository   = $categoryRepository;
-        $this->localeRepository     = $localeRepository;
-        $this->fileInfoRepository   = $fileInfoRepository;
-        $this->maxCategoriesDepth   = 3;
+        $this->buffer = $bufferFactory->create();
+        $this->attributeRepository = $attributeRepository;
+        $this->channelManager = $channelManager;
+        $this->categoryRepository = $categoryRepository;
+        $this->localeRepository = $localeRepository;
+        $this->fileInfoRepository = $fileInfoRepository;
+        $this->maxCategoriesDepth = 3;
     }
 
     /**
@@ -321,7 +328,7 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
      */
     public function getPimMediaUrl()
     {
-        return rtrim($this->pimMediaUrl, '/') . '/';
+        return rtrim($this->pimMediaUrl, '/').'/';
     }
 
     /**
@@ -398,6 +405,8 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
             $xml = new \DOMDocument('1.0','utf-8');
             $content = file_get_contents($this->getPath());
             $content = html_entity_decode($content);
+            //because of htmlentities(html_entity_decode($content)); encode the < to &lt and > to &gt and to read nodes, we need them
+            $content = preg_replace("/&(?!#?[a-z0-9]+;)/", "&amp;",$content);
             $xml->formatOutput = true;
             $xml->preserveWhiteSpace = false;
             $xml->loadXML($content);
@@ -416,12 +425,12 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
             $this->addItemChild('retailprice', $item['product'], $this->getRetailPrice(), $product, $xml);
             $this->addItemChild('recommendable', $item['product'], $this->getRecommendable(), $product, $xml);
             if ($this->getIncludeCategories()) {
-                $productCategories      = $this->removeCategoriesNotInChannel($item['product']['categories']);
+                $productCategories = $this->removeCategoriesNotInChannel($item['product']['categories']);
                 $productCategoriesLabel = $this->getCategoriesLabel($productCategories);
                 $i = 1;
                 foreach ($productCategoriesLabel as $categoryLabel) {
                     if ($i <= $this->maxCategoriesDepth) {
-                        $product->appendChild($xml->createElement('categoryid' . $i, $categoryLabel));
+                        $product->appendChild($xml->createElement('categoryid'.$i, $categoryLabel));
                     }
                     $i++;
                 }
@@ -457,7 +466,7 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
     protected function addItemChild($nodeName, $productData, $key, $product, $xml)
     {
         if (!isset($productData[$key])) {
-            $this->setItemError($productData, 'job_execution.summary.undefined_index ' . $key);
+            $this->setItemError($productData, 'job_execution.summary.undefined_index '.$key);
         }
 
         if ($productData[$key] != '') {
@@ -476,15 +485,15 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
      */
     protected function removeCategoriesNotInChannel($categories)
     {
-        $categories    = explode(',', $categories);
-        $channel       = $this->channelManager->getChannelByCode($this->getChannel());
+        $categories = explode(',', $categories);
+        $channel = $this->channelManager->getChannelByCode($this->getChannel());
 
         return array_intersect($this->getCategories($channel->getCategory()->getChildren()), $categories);
     }
 
     /**
      * Retrieve categories only if they are in root category tree associated to current channel
-     * @param  array $children
+     * @param  array      $children
      * @param  array|null $categories
      * @return array $allCategories
      */
@@ -496,7 +505,7 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
         }
         foreach ($children as $child) {
             $allCategories[] = $child->getCode();
-            if($child->hasChildren()) {
+            if ($child->hasChildren()) {
                 $allCategories = array_merge($allCategories, $this->getCategories($child->getChildren(), $categories));
             }
         }
@@ -522,129 +531,129 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
     public function getConfigurationFields()
     {
         return array_merge(
-                parent::getConfigurationFields(),
-                [
-                    'id' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.id.label',
-                            'help'     => 'dnd_criteo_connector.export.id.help',
-                            'required' => true,
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
+            parent::getConfigurationFields(),
+            [
+                'id'                => [
+                    'type'    => 'choice',
+                    'options' => [
+                        'label'    => 'dnd_criteo_connector.export.id.label',
+                        'help'     => 'dnd_criteo_connector.export.id.help',
+                        'required' => true,
+                        'choices'  => $this->getAttributesChoices(),
+                        'select2'  => true,
                     ],
-                    'name' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.name.label',
-                            'help'     => 'dnd_criteo_connector.export.name.help',
-                            'required' => true,
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
+                ],
+                'name'              => [
+                    'type'    => 'choice',
+                    'options' => [
+                        'label'    => 'dnd_criteo_connector.export.name.label',
+                        'help'     => 'dnd_criteo_connector.export.name.help',
+                        'required' => true,
+                        'choices'  => $this->getAttributesChoices(),
+                        'select2'  => true,
                     ],
-                    'productUrl' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.productUrl.label',
-                            'help'     => 'dnd_criteo_connector.export.productUrl.help',
-                            'required' => true,
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
+                ],
+                'productUrl'        => [
+                    'type'    => 'choice',
+                    'options' => [
+                        'label'    => 'dnd_criteo_connector.export.productUrl.label',
+                        'help'     => 'dnd_criteo_connector.export.productUrl.help',
+                        'required' => true,
+                        'choices'  => $this->getAttributesChoices(),
+                        'select2'  => true,
                     ],
-                    'smallImage' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.smallImage.label',
-                            'help'     => 'dnd_criteo_connector.export.smallImage.help',
-                            'required' => true,
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
+                ],
+                'smallImage'        => [
+                    'type'    => 'choice',
+                    'options' => [
+                        'label'    => 'dnd_criteo_connector.export.smallImage.label',
+                        'help'     => 'dnd_criteo_connector.export.smallImage.help',
+                        'required' => true,
+                        'choices'  => $this->getAttributesChoices(),
+                        'select2'  => true,
                     ],
-                    'bigImage' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.bigImage.label',
-                            'help'     => 'dnd_criteo_connector.export.bigImage.help',
-                            'required' => true,
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
+                ],
+                'bigImage'          => [
+                    'type'    => 'choice',
+                    'options' => [
+                        'label'    => 'dnd_criteo_connector.export.bigImage.label',
+                        'help'     => 'dnd_criteo_connector.export.bigImage.help',
+                        'required' => true,
+                        'choices'  => $this->getAttributesChoices(),
+                        'select2'  => true,
                     ],
-                    'description' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.description.label',
-                            'help'     => 'dnd_criteo_connector.export.description.help',
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
+                ],
+                'description'       => [
+                    'type'    => 'choice',
+                    'options' => [
+                        'label'   => 'dnd_criteo_connector.export.description.label',
+                        'help'    => 'dnd_criteo_connector.export.description.help',
+                        'choices' => $this->getAttributesChoices(),
+                        'select2' => true,
                     ],
-                    'price' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.price.label',
-                            'help'     => 'dnd_criteo_connector.export.price.help',
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
+                ],
+                'price'             => [
+                    'type'    => 'choice',
+                    'options' => [
+                        'label'   => 'dnd_criteo_connector.export.price.label',
+                        'help'    => 'dnd_criteo_connector.export.price.help',
+                        'choices' => $this->getAttributesChoices(),
+                        'select2' => true,
                     ],
-                    'retailPrice' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.retailPrice.label',
-                            'help'     => 'dnd_criteo_connector.export.retailPrice.help',
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
+                ],
+                'retailPrice'       => [
+                    'type'    => 'choice',
+                    'options' => [
+                        'label'   => 'dnd_criteo_connector.export.retailPrice.label',
+                        'help'    => 'dnd_criteo_connector.export.retailPrice.help',
+                        'choices' => $this->getAttributesChoices(),
+                        'select2' => true,
                     ],
-                    'recommendable' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.recommendable.label',
-                            'help'     => 'dnd_criteo_connector.export.recommendable.help',
-                            'choices'  => $this->getAttributesChoices(),
-                            'select2'  => true
-                        ]
+                ],
+                'recommendable'     => [
+                    'type'    => 'choice',
+                    'options' => [
+                        'label'   => 'dnd_criteo_connector.export.recommendable.label',
+                        'help'    => 'dnd_criteo_connector.export.recommendable.help',
+                        'choices' => $this->getAttributesChoices(),
+                        'select2' => true,
                     ],
-                    'includeCategories' => [
-                        'type'    => 'switch',
-                        'options' => [
-                            'label'    => 'dnd_criteo_connector.export.includeCategories.label',
-                            'help'     => 'dnd_criteo_connector.export.includeCategories.help'
-                        ]
+                ],
+                'includeCategories' => [
+                    'type'    => 'switch',
+                    'options' => [
+                        'label' => 'dnd_criteo_connector.export.includeCategories.label',
+                        'help'  => 'dnd_criteo_connector.export.includeCategories.help',
                     ],
-                    'channel' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'choices'  => $this->channelManager->getChannelChoices(),
-                            'required' => true,
-                            'select2'  => true,
-                            'label'    => 'pim_base_connector.export.channel.label',
-                            'help'     => 'pim_base_connector.export.channel.help'
-                        ]
+                ],
+                'channel'           => [
+                    'type'    => 'choice',
+                    'options' => [
+                        'choices'  => $this->channelManager->getChannelChoices(),
+                        'required' => true,
+                        'select2'  => true,
+                        'label'    => 'pim_base_connector.export.channel.label',
+                        'help'     => 'pim_base_connector.export.channel.help',
                     ],
-                    'locale' => [
-                        'type'    => 'choice',
-                        'options' => [
-                            'choices'  => $this->getLocaleCodes(),
-                            'required' => true,
-                            'select2'  => true,
-                            'label'    => 'dnd_criteo_connector.export.locale.label',
-                            'help'     => 'dnd_criteo_connector.export.locale.help'
-                        ]
+                ],
+                'locale'            => [
+                    'type'    => 'choice',
+                    'options' => [
+                        'choices'  => $this->getLocaleCodes(),
+                        'required' => true,
+                        'select2'  => true,
+                        'label'    => 'dnd_criteo_connector.export.locale.label',
+                        'help'     => 'dnd_criteo_connector.export.locale.help',
                     ],
-                    'pimMediaUrl' => [
-                        'options' => [
-                            'label'    => 'pim_base_connector.export.pimMediaUrl.label',
-                            'help'     => 'pim_base_connector.export.pimMediaUrl.help'
-                        ]
+                ],
+                'pimMediaUrl'       => [
+                    'options' => [
+                        'label' => 'pim_base_connector.export.pimMediaUrl.label',
+                        'help'  => 'pim_base_connector.export.pimMediaUrl.help',
                     ],
-                ]
-            );
+                ],
+            ]
+        );
     }
 
     /**
@@ -715,16 +724,26 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
             }
             if ($attribute->getAttributeType() == AttributeTypes::IMAGE) {
                 $fileName = basename($value);
-                $file     = $this->fileInfoRepository->findOneBy(['originalFilename' => $fileName]);
+                $file = $this->fileInfoRepository->findOneBy(['originalFilename' => $fileName]);
                 if ($file !== null) {
-                    $newProduct[$newKey[0]] = $this->getPimMediaUrl() . 'file_storage/catalog/' . $file->getKey();
+                    $newProduct[$newKey[0]] = $this->getPimMediaUrl().'file_storage/catalog/'.$file->getKey();
                 }
             } elseif (in_array($attribute->getAttributeType(), [AttributeTypes::TEXT, AttributeTypes::TEXTAREA])) {
                 $newProduct[$newKey[0]] = htmlentities(html_entity_decode($value));
-            } elseif (in_array($attribute->getAttributeType(), [AttributeTypes::OPTION_MULTI_SELECT, AttributeTypes::OPTION_SIMPLE_SELECT])) {
+            } elseif (in_array(
+                $attribute->getAttributeType(),
+                [AttributeTypes::OPTION_MULTI_SELECT, AttributeTypes::OPTION_SIMPLE_SELECT]
+            )) {
                 foreach ($attribute->getOptions() as $option) {
-                    if($option->getCode() == $value) {
-                        $newProduct[$newKey[0]] = $option->setLocale($this->getLocale())->getOptionValue()->getLabel();
+                    if ($option->getCode() == $value) {
+                        $optionValue = $option->setLocale($this->getLocale())->getOptionValue();
+                        // if no tranlsation, the attribute option code is use
+                        if (!is_object($optionValue)) {
+                            $newProduct[$newKey[0]] = $value;
+                            break;
+                        }
+
+                        $newProduct[$newKey[0]] = $optionValue->getLabel();
                         break;
                     }
                 }
