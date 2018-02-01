@@ -2,71 +2,40 @@
 
 namespace Dnd\Bundle\CriteoConnectorBundle\Writer\File;
 
+use Akeneo\Component\Batch\Item\InvalidItemException;
+use Akeneo\Component\Batch\Item\ItemWriterInterface;
+use Akeneo\Component\Batch\Item\InitializableInterface;
 use Akeneo\Component\Batch\Job\JobParameters;
-use Akeneo\Component\Batch\Job\RuntimeErrorException;
+use Akeneo\Component\Batch\Step\StepExecutionAwareInterface;
 use Akeneo\Component\Buffer\BufferFactory;
-use Akeneo\Component\Buffer\BufferInterface;
-use Symfony\Component\Validator\Constraints as Assert;
-use Pim\Component\Connector\Writer\File\AbstractFileWriter;
-use Pim\Component\Connector\Writer\File\ArchivableWriterInterface;
+use Akeneo\Component\Classification\Repository\CategoryRepositoryInterface;
+use Entity\Category;
+use Pim\Bundle\CatalogBundle\Entity\Channel;
+use Pim\Component\Catalog\AttributeTypes;
 use Pim\Component\Catalog\Repository\AttributeRepositoryInterface;
 use Pim\Component\Catalog\Repository\ChannelRepositoryInterface;
-use Akeneo\Component\Classification\Repository\CategoryRepositoryInterface;
-use Pim\Component\Catalog\Repository\LocaleRepositoryInterface;
-use Akeneo\Component\Batch\Item\InvalidItemException;
-use Pim\Component\Catalog\AttributeTypes;
-use Akeneo\Component\FileStorage\Repository\FileInfoRepositoryInterface;
-
+use Pim\Component\Connector\Writer\File\AbstractFileWriter;
+use Pim\Component\Connector\Writer\File\FlatItemBuffer;
+use Pim\Component\Connector\Writer\File\FlatItemBufferFlusher;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Exception;
+use DOMDocument;
+use DOMElement;
+use DOMNode;
 
 /**
  * Class XmlProductWriter
  *
- * @author                 Agence Dn'D <contact@dnd.fr>
- * @copyright              Copyright (c) 2017 Agence Dn'D
- * @license                http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @link                   http://www.dnd.fr/
+ * @author          Didier Youn <didier.youn@dnd.fr>
+ * @copyright       Copyright (c) 2017 Agence Dn'D
+ * @license         http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link            http://www.dnd.fr/
  */
-class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInterface
+class XmlProductWriter extends AbstractFileWriter implements
+    ItemWriterInterface,
+    InitializableInterface,
+    StepExecutionAwareInterface
 {
-
-    /** @var BufferInterface */
-    protected $buffer;
-
-    /** @var array */
-    protected $writtenFiles = [];
-
-    /** @var string */
-    protected $id;
-
-    /** @var string */
-    protected $name;
-
-    /** @var string */
-    protected $productUrl;
-
-    /** @var string */
-    protected $bigImage;
-
-    /** @var string */
-    protected $smallImage;
-
-    /** @var string */
-    protected $description;
-
-    /** @var string */
-    protected $price;
-
-    /** @var string */
-    protected $retailPrice;
-
-    /** @var string */
-    protected $recommendable;
-
-    /** @var string */
-    protected $pimMediaUrl;
-
-    /** @var int */
-    protected $includeCategories;
 
     /** @var AttributeRepositoryInterface */
     protected $attributeRepository;
@@ -74,62 +43,85 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
     /** @var CategoryRepositoryInterface */
     protected $categoryRepository;
 
-    /**
-     * @Assert\NotBlank(groups={"Execution"})
-     * @Channel
-     *
-     * @var string Channel code
-     */
-    protected $channel;
-
     /** @var ChannelRepositoryInterface */
     protected $channelRepository;
 
-    /** @var LocaleRepositoryInterface */
-    protected $localeRepository;
+    /** @var BufferFactory */
+    protected $bufferFactory;
 
-    /** @var string */
-    protected $locale;
+    /** @var FlatItemBuffer */
+    protected $flatRowBuffer = null;
 
-    /** @var FileInfoRepositoryInterface */
-    protected $fileInfoRepository;
+    /** @var FlatItemBufferFlusher */
+    protected $flusher = null;
 
-    /** @var int */
+    /** @var array */
+    protected $writtenFiles = [];
+
+    /** @var DOMDocument $DOMRoot */
+    protected $DOMRoot;
+
+    /** @var DOMDocument $DOMBody */
+    protected $DOMBody;
+
+    /** @var string $exportEntity */
+    protected $exportEntity;
+
+    /** @var int $maxCategoriesDepth */
     protected $maxCategoriesDepth;
 
+    /** @var JobParameters $jobParameters */
+    protected $jobParameters;
+
     /**
-     * @param BufferFactory                $bufferFactory
+     * ProductWriter constructor.
+     *
      * @param AttributeRepositoryInterface $attributeRepository
-     * @param ChannelRepositoryInterface   $channelRepository
-     * @param CategoryRepositoryInterface  $categoryRepository
-     * @param LocaleRepositoryInterface    $localeRepository
-     * @param FileInfoRepositoryInterface  $fileInfoRepository
+     * @param CategoryRepositoryInterface $categoryRepository
+     * @param ChannelRepositoryInterface $channelRepository
+     * @param BufferFactory $bufferFactory
+     * @param FlatItemBufferFlusher $flusher
+     * @param string $exportEntity
      */
     public function __construct(
-        BufferFactory $bufferFactory,
         AttributeRepositoryInterface $attributeRepository,
-        ChannelRepositoryInterface $channelRepository,
         CategoryRepositoryInterface $categoryRepository,
-        LocaleRepositoryInterface $localeRepository,
-        FileInfoRepositoryInterface $fileInfoRepository
+        ChannelRepositoryInterface $channelRepository,
+        BufferFactory $bufferFactory,
+        FlatItemBufferFlusher $flusher,
+        string $exportEntity
     ) {
         parent::__construct();
 
-        $this->buffer = $bufferFactory->create();
-        $this->attributeRepository = $attributeRepository;
-        $this->channelRepository = $channelRepository;
-        $this->categoryRepository = $categoryRepository;
-        $this->localeRepository = $localeRepository;
-        $this->fileInfoRepository = $fileInfoRepository;
-        $this->maxCategoriesDepth = 3;
+        $this->attributeRepository  = $attributeRepository;
+        $this->categoryRepository   = $categoryRepository;
+        $this->channelRepository    = $channelRepository;
+
+        $this->bufferFactory        = $bufferFactory;
+        $this->flusher              = $flusher;
+
+        $this->exportEntity         = $exportEntity;
+        $this->maxCategoriesDepth   = 3;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getWrittenFiles()
+    public function initialize()
     {
-        return $this->writtenFiles;
+        if (null === $this->flatRowBuffer) {
+            $this->flatRowBuffer = $this->bufferFactory->create();
+        }
+        try {
+            $this->jobParameters = $this->stepExecution->getJobParameters();
+
+            $this->initExportFile();
+            $this->initDomContent();
+        } catch (FileException $fileException) {
+            throw new FileException('Cant create export file');
+        } catch (Exception $exception) {
+            throw new Exception('Internal error in generating XML Export');
+        }
     }
 
     /**
@@ -137,89 +129,97 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
      */
     public function write(array $items)
     {
-        $parameters = $this->stepExecution->getJobParameters();
-        if (false === file_exists($this->getPath())) {
-            $xml = new \DOMDocument('1.0', 'utf-8');
-            $xml->formatOutput = true;
-            $xml->preserveWhiteSpace = false;
-            $products = $xml->createElement('products');
-            $xml->appendChild($products);
-
-        } else {
-            $xml = new \DOMDocument('1.0', 'utf-8');
-            $content = file_get_contents($this->getPath());
-            $content = html_entity_decode($content);
-            $xml->formatOutput = true;
-            $xml->preserveWhiteSpace = false;
-            $xml->loadXML($content);
-            $products = $xml->getElementsByTagName("products")->item(0);
-        }
         foreach ($items as $item) {
             $item['product'] = $this->formatProductArray($item['values']);
-            unset($item['values']);
-            $product = $xml->createElement('product');
-            $product->setAttribute('id', $item['product'][$parameters->get('id')]);
-            $this->addItemChild('name', $item['product'], $parameters->get('name'), $product, $xml);
-            $this->addItemChild('description', $item['product'], $parameters->get('description'), $product, $xml);
-            $this->addItemChild('producturl', $item['product'], $parameters->get('productUrl'), $product, $xml);
-            $this->addItemChild('smallimage', $item['product'], $parameters->get('smallImage'), $product, $xml);
-            $this->addItemChild('bigimage', $item['product'], $parameters->get('bigImage'), $product, $xml);
-            $this->addItemChild('price', $item['product'], $parameters->get('price'), $product, $xml);
-            $this->addItemChild('retailprice', $item['product'], $parameters->get('retailPrice'), $product, $xml);
-            $this->addItemChild('recommendable', $item['product'], $parameters->get('recommendable'), $product, $xml);
-            if ($parameters->get('includeCategories')) {
-                $productCategories = $this->removeCategoriesNotInChannel($item['categories']);
-                $productCategoriesLabel = $this->getCategoriesLabel($productCategories);
-                $i = 1;
-                foreach ($productCategoriesLabel as $categoryLabel) {
-                    if ($i <= $this->maxCategoriesDepth) {
-                        $product->appendChild($xml->createElement('categoryid'.$i, $categoryLabel));
-                    }
-                    $i++;
-                }
-            }
-
-            $products->appendChild($product);
-
-            $xml->formatOutput = true;
+            $this->addXmlNode($item, $this->DOMRoot, $this->DOMBody);
         }
 
-        $path = $this->getPath();
-        if (!is_dir(dirname($path))) {
-            $this->localFs->mkdir(dirname($path));
-        }
+        file_put_contents($this->getPath(), $this->DOMRoot->saveXML());
 
-        if (false === file_put_contents($path, $xml->saveXML())) {
-            throw new RuntimeErrorException('Failed to write to file %path%', ['%path%' => $this->getPath()]);
-        }
-
-        return null;
+        $this->flatRowBuffer->write($items, []);
     }
 
     /**
-     * Add new node to xml item node
+     * Init Export File
      *
-     * @param string       $nodeName
-     * @param array        $productData
-     * @param string       $key
-     * @param \DomElement  $product
-     * @param \DomDocument $xml
-     *
-     * @return boolean|\DOMElement
+     * @return void
+     * @throws Exception
      */
-    protected function addItemChild($nodeName, $productData, $key, $product, $xml)
+    private function initExportFile() : void
     {
-        if (!isset($productData[$key])) {
-            $this->setItemError($productData, 'job_execution.summary.undefined_index '.$key);
+        try {
+            /** @var string $file */
+            $file = $this->getPath();
+            if (!is_dir(dirname($file))) {
+                $this->localFs->mkdir(dirname($file), 0777);
+            }
+            if (!file_exists($file)) {
+                $this->localFs->touch($file);
+            }
+            file_get_contents($file, '');
+        } catch (Exception $exception) {
+            throw new Exception("An error occurred while creating your directory at " . $this->getPath());
         }
+    }
 
-        if ($productData[$key] != '') {
-            $node = $xml->createElement($nodeName, $productData[$key]);
+    /**
+     * Init DOM Content
+     *
+     * @return void
+     */
+    private function initDomContent() : void
+    {
+        /** @var DOMDocument DOMRoot */
+        $this->DOMRoot = new \DOMDocument('1.0', 'UTF-8');
+        /** @var DOMElement $xmlRoot */
+        $xmlRoot = $this->DOMRoot->createElement('items');
 
-            return $product->appendChild($node);
+        $this->DOMRoot->appendChild($xmlRoot);
+        $this->DOMRoot->formatOutput = true;
+        $this->DOMRoot->preserveWhiteSpace = false;
+
+        file_put_contents($this->getPath(), $this->DOMRoot->saveXML());
+
+        $this->setDomItems($this->DOMRoot->getElementsByTagName('items')->item(0));
+    }
+
+    /**
+     * Add new node in XML Body
+     *
+     * @param array $item
+     * @param DOMDocument $xmlFile
+     * @param DOMNode $xmlRoot
+     *
+     * @throws InvalidItemException
+     */
+    private function addXmlNode(array $item, DOMDocument $xmlFile, DOMNode $xmlRoot) : void
+    {
+        /** @var JobParameters $parameters */
+        $parameters = $this->jobParameters;
+        /** @var \DOMElement $xmlItem */
+        $xmlItem = $xmlFile->createElement($this->exportEntity);
+        $xmlItem = $xmlRoot->appendChild($xmlItem);
+
+        $xmlItem->setAttribute('id', $item['product'][$parameters->get('id')]);
+        $this->addItemChild('name', $item['product'], $parameters->get('name'), $xmlItem, $xmlFile);
+        $this->addItemChild('description', $item['product'], $parameters->get('description'), $xmlItem, $xmlFile);
+        $this->addItemChild('producturl', $item['product'], $parameters->get('productUrl'), $xmlItem, $xmlFile);
+        $this->addItemChild('smallimage', $item['product'], $parameters->get('smallImage'), $xmlItem, $xmlFile);
+        $this->addItemChild('bigimage', $item['product'], $parameters->get('bigImage'), $xmlItem, $xmlFile);
+        $this->addItemChild('price', $item['product'], $parameters->get('price'), $xmlItem, $xmlFile);
+        $this->addItemChild('retailprice', $item['product'], $parameters->get('retailPrice'), $xmlItem, $xmlFile);
+        $this->addItemChild('recommendable', $item['product'], $parameters->get('recommendable'), $xmlItem, $xmlFile);
+        if ($parameters->get('includeCategories')) {
+            $productCategories = $this->removeCategoriesNotInChannel($item['categories']);
+            $productCategoriesLabel = $this->getCategoriesLabel($productCategories);
+            $i = 1;
+            foreach ($productCategoriesLabel as $categoryLabel) {
+                if ($i <= $this->maxCategoriesDepth) {
+                    $xmlItem->appendChild($xmlFile->createElement('categoryid' . $i, $categoryLabel));
+                }
+                $i++;
+            }
         }
-
-        return false;
     }
 
     /**
@@ -229,17 +229,16 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
      * Hack to prevent undefined index on product array if attribute mapping is not specified
      * Create url for product images
      *
-     * @param  array $product
+     * @param array $product
      *
      * @return array $newProduct
      */
-    protected function formatProductArray($product)
+    private function formatProductArray(array $product) : array
     {
-
-        $parameters = $this->stepExecution->getJobParameters()->all();
+        /** @var array $parameters */
+        $parameters = $this->jobParameters->all();
         $parameters['locale'] = $parameters['filters']['structure']['locales'][0];
         unset($parameters['with_media']);
-
         $newProduct = [];
         foreach ($product as $key => $value) {
             if (!in_array($key, $parameters)) {
@@ -283,7 +282,6 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
                 }
             }
         }
-
         $parameters = [
             $parameters['id']            => '',
             $parameters['name']          => '',
@@ -295,40 +293,48 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
             $parameters['retailPrice']   => '',
             $parameters['recommendable'] => '',
         ];
-
         $missingValues = array_diff_key($parameters, $newProduct);
-
         $newProduct += $missingValues;
-
         $newProduct[''] = '';
 
         return $newProduct;
     }
 
     /**
-     * Remove categories code which are not in root category tree associated to current channel
+     * Add new node to xml item node
      *
-     * @param  array $categories
+     * @param string      $nodeName
+     * @param array       $productData
+     * @param string      $key
+     * @param DomElement  $product
+     * @param DomDocument $xml
      *
-     * @return array
+     * @return boolean|DOMElement
+     * @throws InvalidItemException
      */
-    protected function removeCategoriesNotInChannel($categories)
+    private function addItemChild(string $nodeName, array $productData, string $key, DOMElement $product, DOMDocument $xml)
     {
-        $parameters = $parameters = $this->stepExecution->getJobParameters();
-        $channel = $this->getChannelByCode($parameters->get('filters')['structure']['scope']);
+        if (!isset($productData[$key])) {
+            $this->setItemError($productData, 'job_execution.summary.undefined_index ' . $key);
+        }
+        if ($productData[$key] !== '') {
+            $node = $xml->createElement($nodeName, $productData[$key]);
+            $product->appendChild($node);
+        }
 
-        return array_intersect($this->getCategories($channel->getCategory()->getChildren()), $categories);
+        return false;
     }
+
 
     /**
      * Retrieve categories only if they are in root category tree associated to current channel
      *
-     * @param  array      $children
-     * @param  array|null $categories
+     * @param array $children
+     * @param array|null $categories
      *
      * @return array $allCategories
      */
-    protected function getCategories($children, $categories = null)
+    private function getCategories($children, array $categories = null) : array
     {
         $allCategories = $categories;
         if ($allCategories === null) {
@@ -347,13 +353,14 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
     /**
      * Retrieve categories labels for selected locale
      *
-     * @param  array $categories
+     * @param Category[] $categories
      *
-     * @return array $labels
+     * @return string[] $labels
      */
-    protected function getCategoriesLabel($categories)
+    private function getCategoriesLabel(array $categories) : array
     {
-        $parameters = $this->stepExecution->getJobParameters();
+        /** @var JobParameters $parameters */
+        $parameters = $this->jobParameters;
         $labels = [];
         foreach ($this->categoryRepository->getCategoriesByCodes($categories) as $category) {
             $labels[] = $category->setLocale($parameters->get('filters')['structure']['locales'][0])->getLabel();
@@ -363,24 +370,49 @@ class XmlProductWriter extends AbstractFileWriter implements ArchivableWriterInt
     }
 
     /**
+     * Remove categories code which are not in root category tree associated to current channel
+     *
+     * @param array $categories
+     *
+     * @return array
+     */
+    private function removeCategoriesNotInChannel(array $categories) : array
+    {
+        /** @var JobParameters $parameters */
+        $parameters = $this->jobParameters;
+        $channel = $this->getChannelByCode($parameters->get('filters')['structure']['scope']);
+
+        return array_intersect($this->getCategories($channel->getCategory()->getChildren()), $categories);
+    }
+
+    /**
      * Get channel by code
      *
      * @param string $code
-     *
-     * @return ChannelInterface
+     * @return null|Channel|object
      */
-    public function getChannelByCode($code)
+    private function getChannelByCode(string $code) : ?Channel
     {
         return $this->channelRepository->findOneBy(['code' => $code]);
     }
 
     /**
+     * @param DOMElement $element
+     */
+    private function setDomItems(DOMElement $element) : void
+    {
+        $this->DOMBody = $element;
+    }
+
+    /**
+     * Add warning
+     *
      * @param array $item
-     * @param       $error
+     * @param $error
      *
      * @throws InvalidItemException
      */
-    protected function setItemError(array $item, $error)
+    private function setItemError(array $item, $error)
     {
         if ($this->stepExecution) {
             $this->stepExecution->incrementSummaryInfo('skip');

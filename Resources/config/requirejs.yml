@@ -1,17 +1,18 @@
 config:
     paths:
-        attributes-list: dndcriteoconnector/js/attributes-list
-        available-currencies-list: dndcriteoconnector/js/available-currencies-list
+        dnd/attributes-list: dndcriteoconnector/js/attributes-list
+        dnd/currencies-list: dndcriteoconnector/js/currencies-list
+
     config:
         pim/fetcher-registry:
             fetchers:
-                attributes-list:
+                dnd/attributes-list:
                     module: pim/base-fetcher
                     options:
                         urls:
                             list: dnd_criteo_connector_attributes_list
-                available-currencies-list:
+                dnd/currencies-list:
                     module: pim/base-fetcher
                     options:
                         urls:
-                            list: dnd_criteo_connector_available_currencies_list
+                            list: dnd_criteo_connector_currencies_list

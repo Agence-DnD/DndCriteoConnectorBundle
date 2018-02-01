@@ -1,11 +1,9 @@
 parameters:
-    dnd_criteo_connector.rest.controller.class: Dnd\Bundle\CriteoConnectorBundle\Controller\RestController
+    dnd_criteo_connector.rest.attribute_controller.class: Dnd\Bundle\CriteoConnectorBundle\Controller\Rest\AttributeController
 
 services:
-    dnd_criteo_connector.rest.controller:
-        class: '%dnd_criteo_connector.rest.controller.class%'
-        scope: request
+    dnd_criteo_connector.rest.attribute_controller:
+        class: '%dnd_criteo_connector.rest.attribute_controller.class%'
         arguments:
             - '@pim_catalog.repository.attribute'
             - '@pim_catalog.repository.currency'
-

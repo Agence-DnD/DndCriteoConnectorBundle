@@ -1,11 +1,8 @@
 parameters:
-    dnd_criteo_connector.connector_name: 'Dnd Criteo Connector'
-    dnd_criteo_connector.job_name.xml_criteo_product_export: 'criteo_xml_product_export'
-    dnd_criteo_connector.job.job_parameters.default_values_provider.criteo_product_xml_export.class: Dnd\Bundle\CriteoConnectorBundle\Job\JobParameters\DefaultValuesProvider\CriteoExport
-    dnd_criteo_connector.job.job_parameters.constraint_collection_provider.criteo_product_xml_export.class: Dnd\Bundle\CriteoConnectorBundle\Job\JobParameters\ConstraintCollectionProvider\CriteoExport
+    dnd_criteo_connector.job_name.connector_name.csv:         'Dnd Criteo Connector'
+    dnd_criteo_connector.job_name.xml_criteo_product_export:  'dnd_criteo_connector_xml_product_export'
 
 services:
-    # Job Definition ---------------------------------------------------------------------------------------------------
     dnd_criteo_connector.job.xml_criteo_product_export:
         class: '%pim_connector.job.simple_job.class%'
         arguments:
@@ -13,33 +10,6 @@ services:
             - '@event_dispatcher'
             - '@akeneo_batch.job_repository'
             -
-                - '@dnd_criteo_connector.step.xml_product.export'
+                - '@dnd_criteo_connector.step.xml_criteo_product_export.export'
         tags:
-            - { name: akeneo_batch.job, connector: '%dnd_criteo_connector.connector_name%', type: '%pim_connector.job.export_type%' }
-
-    # Job Parameters ---------------------------------------------------------------------------------------------------
-    dnd_criteo_connector.job.job_parameters.default_values_provider.criteo_product_xml_export:
-        class: '%dnd_criteo_connector.job.job_parameters.default_values_provider.criteo_product_xml_export.class%'
-        arguments:
-            - '@pim_catalog.repository.channel'
-            - '@pim_catalog.repository.locale'
-            -
-                - '%dnd_criteo_connector.job_name.xml_criteo_product_export%'
-        tags:
-            - { name: akeneo_batch.job.job_parameters.default_values_provider }
-
-    dnd_criteo_connector.job.job_parameters.constraint_collection_provider.criteo_product_xml_export:
-        class: '%dnd_criteo_connector.job.job_parameters.constraint_collection_provider.criteo_product_xml_export.class%'
-        arguments:
-            -
-                - '%dnd_criteo_connector.job_name.xml_criteo_product_export%'
-        tags:
-            - { name: akeneo_batch.job.job_parameters.constraint_collection_provider }
-
-    dnd_criteo_connector.job.job_instance.criteo_product_xml_export:
-        class: '%pim_enrich.provider.form.job_instance.class%'
-        arguments:
-            -
-               criteo_xml_product_export: xml-criteo-product-export
-        tags:
-            - { name: pim_enrich.provider.form, priority: 90 }
+            - { name: akeneo_batch.job,connector: '%dnd_criteo_connector.job_name.connector_name.csv%', type: '%pim_connector.job.export_type%' }

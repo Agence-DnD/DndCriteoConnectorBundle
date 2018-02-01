@@ -3,11 +3,11 @@ parameters:
 
 services:
     dnd_criteo_connector.writer.file.xml_product:
-        class: %dnd_criteo_connector.writer.file.xml_product.class%
+        class: '%dnd_criteo_connector.writer.file.xml_product.class%'
         arguments:
-            - '@akeneo_buffer.factory.array_buffer'
             - '@pim_catalog.repository.attribute'
-            - '@pim_catalog.repository.channel'
             - '@pim_catalog.repository.category'
-            - '@pim_catalog.repository.locale'
-            - '@akeneo_file_storage.repository.file_info'
+            - '@pim_catalog.repository.channel'
+            - '@pim_connector.factory.flat_item_buffer'
+            - '@pim_connector.writer.file.flat_item_buffer_flusher'
+            - 'product'

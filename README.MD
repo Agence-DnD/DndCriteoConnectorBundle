@@ -9,6 +9,7 @@ This connector allow you to export your products into XML for Criteo.
 
 | CriteoConnectorBundle   | Akeneo PIM Community Edition |
 |:-----------------------:|:----------------------------:|
+| v1.3.*                  | v2.*                         |
 | v1.2.*                  | v1.7.*                       |
 | v1.1.*                  | v1.6.*                       |
 | v1.0.*                  | v1.5.*                       |
@@ -31,7 +32,7 @@ In your ```composer.json```, add the following code dependending on your Akeneo 
 
 ```json
 {
-    "agencednd/criteo-connector-bundle": "1.2.*"
+    "agencednd/criteo-connector-bundle": "1.3.*"
 }
 ```
 

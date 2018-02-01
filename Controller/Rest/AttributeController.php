@@ -1,48 +1,43 @@
 <?php
 
-namespace Dnd\Bundle\CriteoConnectorBundle\Controller;
+namespace Dnd\Bundle\CriteoConnectorBundle\Controller\Rest;
 
 use Pim\Component\Catalog\Repository\AttributeRepositoryInterface;
 use Pim\Component\Catalog\Repository\CurrencyRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
- * Class RestController
+ * Class AttributeController
  *
- * @author                 Agence Dn'D <contact@dnd.fr>
- * @copyright              Copyright (c) 2017 Agence Dn'D
- * @license                http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @link                   http://www.dnd.fr/
+ * @author          Didier Youn <didier.youn@dnd.fr>
+ * @copyright       Copyright (c) 2017 Agence Dn'D
+ * @license         http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link            http://www.dnd.fr/
  */
-class RestController
+class AttributeController
 {
 
-    /**
-     * @var AttributeRepositoryInterface
-     */
-    protected $attributeRepository;
+    /** @var AttributeRepositoryInterface $attributeRepository */
+    private $attributeRepository;
+
+    /** @var CurrencyRepositoryInterface $currencyRepository */
+    private $currencyRepository;
 
     /**
-     * @var CurrencyRepositoryInterface
-     */
-    protected $currencyRepository;
-
-
-    /**
-     * RestController constructor.
+     * AttributeController constructor.
      *
      * @param AttributeRepositoryInterface $attributeRepository
-     * @param CurrencyRepositoryInterface  $currencyRepository
+     * @param CurrencyRepositoryInterface $currencyRepository
      */
-    public function __construct(
-        AttributeRepositoryInterface $attributeRepository,
-        CurrencyRepositoryInterface $currencyRepository
-    ) {
+    public function __construct(AttributeRepositoryInterface $attributeRepository, CurrencyRepositoryInterface $currencyRepository)
+    {
         $this->attributeRepository = $attributeRepository;
         $this->currencyRepository = $currencyRepository;
     }
 
     /**
+     * Get attributes as JSON
+     *
      * @return JsonResponse
      */
     public function listAttributesAction()
@@ -50,6 +45,9 @@ class RestController
         $attributesList = [];
         $attributesList[''] = '';
         foreach ($this->attributeRepository->getAttributesAsArray() as $attribute) {
+            if (!isset($attribute['code'])) {
+                continue;
+            }
             $attributesList[$attribute['code']] = $attribute['code'];
         }
 
@@ -57,9 +55,11 @@ class RestController
     }
 
     /**
+     * Get currencies as JSON
+     *
      * @return JsonResponse
      */
-    public function listAvailableCurrenciesAction()
+    public function listCurrenciesAction()
     {
         $availableCurrenciesList = [];
         $availableCurrenciesList[''] = '';

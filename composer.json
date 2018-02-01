@@ -5,7 +5,7 @@
   "keywords": ["pim", "dnd", "ecommerce", "e-commerce", "criteo", "feed", "connector", "xml", "flow", "akeneo", "mapping"],
   "homepage": "http://dnd.fr",
   "license": "OSL-3.0",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "authors": [
     {
       "name":     "Agence Dn'D",
@@ -24,7 +24,7 @@
     }
   ],
   "require": {
-    "akeneo/pim-community-dev": "~1.7@stable"
+    "akeneo/pim-community-dev": ">=2.0@stable <2.2@stable"
   },
   "autoload": {
     "psr-4": {

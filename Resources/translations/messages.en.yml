@@ -1,6 +1,6 @@
 dnd_criteo_connector:
 batch_jobs:
-  criteo_xml_product_export:
-    label: Criteo xml products export
-    validation.label: Validating file
-    export.label: Criteo products export
+    dnd_criteo_connector_xml_product_export:
+        label: 'Criteo XML Products Export'
+        validation.label: 'Validating file'
+        export.label: 'Criteo products export'

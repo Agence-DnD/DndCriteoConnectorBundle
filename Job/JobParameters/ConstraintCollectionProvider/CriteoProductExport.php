@@ -7,40 +7,43 @@ use Akeneo\Component\Batch\Job\JobParameters\ConstraintCollectionProviderInterfa
 use Symfony\Component\Validator\Constraints\Collection;
 
 /**
- * Class CriteoExport
+ * Class CriteoProductExport
  *
- * @author                 Alexandre Granjeon <alexandre.granjeon@dnd.fr>
- * @copyright              Copyright (c) 2016 Agence Dn'D
- * @license                http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @link                   http://www.dnd.fr/
+ * @author          Didier Youn <didier.youn@dnd.fr>
+ * @copyright       Copyright (c) 2017 Agence Dn'D
+ * @license         http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link            http://www.dnd.fr/
  */
-class CriteoExport implements ConstraintCollectionProviderInterface
+class CriteoProductExport implements ConstraintCollectionProviderInterface
 {
+
     /** @var array $supportedJobNames */
     protected $supportedJobNames;
 
     /**
-     * CriteoExport constructor.
+     * CriteoProductExport constructor.
+     *
      * @param array $supportedJobNames
      */
-    public function __construct(
-        array $supportedJobNames
-    ) {
+    public function __construct(array $supportedJobNames)
+    {
         $this->supportedJobNames = $supportedJobNames;
     }
 
-
     /**
-     * @return Collection
+     * {@inheritdoc}
      */
     public function getConstraintCollection()
     {
-        return new Collection(['fields' => []]);
+        return new Collection(
+            [
+                'fields' => []
+            ]
+        );
     }
 
     /**
-     * @param JobInterface $job
-     * @return bool
+     * {@inheritdoc}
      */
     public function supports(JobInterface $job)
     {

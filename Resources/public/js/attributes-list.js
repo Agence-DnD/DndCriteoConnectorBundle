@@ -20,7 +20,7 @@ define([
          */
         configure: function () {
             return $.when(
-                FetcherRegistry.getFetcher('attributes-list').fetchAll(),
+                FetcherRegistry.getFetcher('dnd/attributes-list').fetchAll(),
                 SelectField.prototype.configure.apply(this, arguments)
             ).then(function (attributesList) {
                 if (_.isEmpty(attributesList)) {

@@ -3,40 +3,40 @@ dnd_criteo_connector:
     job_instance:
       tab:
         criteo:
-          title: Criteo configuration
+          title: 'Criteo configuration'
           currency:
-            title: Devise
-            help:  Devise des prix produit
+            title: 'Currency'
+            help:  'Products price currency'
           id:
-            title: ID
-            help: Attribut utilisé pour l'id Criteo
+            title: 'Id'
+            help: 'Attribute use for Criteo id'
           name:
-            title: Nom
-            help:  Attribut utilisé pour le nom des produits Criteo
+            title: 'Name'
+            help:  'Attribute use for Criteo name'
           productUrl:
-            title: Url produit
-            help:  Attribut utilisé pour l'url des produits Criteo
+            title: 'Product url'
+            help:  'Attribute use for Criteo product url'
           smallImage:
-            title: Petite image
-            help:  Attribut utilisé pour les petites images produit Criteo
+            title: 'Small image'
+            help:  'Attribute use for Criteo small image'
           bigImage:
-            title: Grande image
-            help:  Attribut utilisé pour les grandes images produit Criteo
+            title: 'Big image'
+            help:  'Attribute use for Criteo big image'
           description:
-            title: Description
-            help:  Attribut utilisé pour la description des produits Criteo
+            title: 'Description'
+            help:  'Attribute use for Criteo description'
           price:
-            title: Prix
-            help:  Attribut utilisé pour le prix Criteo
+            title: 'Price'
+            help:  'Attribute use for Criteo price'
           retailPrice:
-            title: Prix au détail
-            help:  Attribut utilisé pour le prix au détail des produits Criteo
+            title: 'Retail Price'
+            help:  'Attribute use for Criteo retail price'
           recommendable:
-            title: Recommendable
-            help:  Attribut utilisé pour les produits recommandables Criteo
+            title: 'Recommendable'
+            help:  'Attribute use for Criteo recommendable (must be boolean)'
           includeCategories:
-            title: Inclure les catégories
-            help:  Voulez vous inclure les catégories pour Criteo (profondeur de trois maximum)
+            title: 'Include categories'
+            help:  'Choose if you want to include categories in xml (depth of three maximum)'
           pimMediaUrl:
-            title: PIM URL
-            help:  Renseigner l'url du PIM si vous utilisez des attributs de type image (exemple : http://www.pimdomaine.com/)
+            title: 'PIM URL'
+            help:  'Fill the url of your PIM if you use image attributes (example : http://www.pimdomain.com/)'

@@ -20,7 +20,7 @@ define([
          */
         configure: function () {
             return $.when(
-                FetcherRegistry.getFetcher('available-currencies-list').fetchAll(),
+                FetcherRegistry.getFetcher('dnd/currencies-list').fetchAll(),
                 SelectField.prototype.configure.apply(this, arguments)
             ).then(function (availableCurrenciesList) {
                 if (_.isEmpty(availableCurrenciesList)) {

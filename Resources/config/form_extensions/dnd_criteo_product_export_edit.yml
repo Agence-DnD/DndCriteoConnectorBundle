@@ -1,0 +1,439 @@
+extensions:
+    dnd-criteo-product-export-edit:
+        module: pim/form/common/edit-form
+
+    dnd-criteo-product-export-edit-main-image:
+        module: pim/form/common/main-image
+        parent: dnd-criteo-product-export-edit
+        targetZone: main-image
+        config:
+            path: bundles/pimui/images/illustration-export-csv.svg
+
+    dnd-criteo-product-export-edit-user-navigation:
+        module: pim/menu/user-navigation
+        parent: dnd-criteo-product-export-edit
+        targetZone: user-menu
+        config:
+            userAccount: pim_menu.user.user_account
+            logout: pim_menu.user.logout
+
+    dnd-criteo-product-export-edit-breadcrumbs:
+        module: pim/common/breadcrumbs
+        parent: dnd-criteo-product-export-edit
+        targetZone: breadcrumbs
+        config:
+            tab: pim-menu-exports
+
+    dnd-criteo-product-export-edit-cache-invalidator:
+        module: pim/cache-invalidator
+        parent: dnd-criteo-product-export-edit
+        position: 1000
+
+    dnd-criteo-product-export-edit-tabs:
+        module: pim/form/common/form-tabs
+        parent: dnd-criteo-product-export-edit
+        targetZone: content
+        position: 100
+
+    dnd-criteo-product-export-edit-properties:
+        module: pim/job/common/edit/properties
+        parent: dnd-criteo-product-export-edit-tabs
+        aclResourceId: pim_importexport_export_profile_property_edit
+        targetZone: container
+        position: 100
+        config:
+            tabTitle: pim_enrich.form.job_instance.tab.properties.title
+            tabCode: pim-job-instance-properties
+
+    dnd-criteo-product-export-edit-global:
+        module: pim/job/common/edit/properties
+        parent: dnd-criteo-product-export-edit-tabs
+        aclResourceId: pim_importexport_export_profile_property_edit
+        targetZone: container
+        position: 120
+        config:
+            tabTitle: pim_enrich.export.product.global_settings.title
+            tabCode: pim-job-instance-global
+
+    dnd-criteo-product-export-edit-content:
+        module: pim/job/product/edit/content
+        parent: dnd-criteo-product-export-edit-tabs
+        aclResourceId: pim_importexport_export_profile_content_edit
+        targetZone: container
+        position: 130
+        config:
+            tabTitle: pim_enrich.form.job_instance.tab.content.title
+            tabCode: pim-job-instance-content
+
+    dnd-criteo-product-export-edit-history:
+        module: pim/common/tab/history
+        parent: dnd-criteo-product-export-edit-tabs
+        targetZone: container
+        aclResourceId: pim_importexport_export_profile_history
+        position: 140
+        config:
+            class: Akeneo\Component\Batch\Model\JobInstance
+            title: pim_enrich.form.job_instance.tab.history.title
+            tabCode: pim-job-instance-history
+
+    dnd-criteo-product-export-edit-properties-code:
+        module: pim/job/common/edit/field/text
+        parent: dnd-criteo-product-export-edit-properties
+        position: 100
+        targetZone: properties
+        config:
+            fieldCode: code
+            label: pim_enrich.form.job_instance.tab.properties.code.title
+            readOnly: true
+
+    dnd-criteo-product-export-edit-properties-label:
+        module: pim/job/common/edit/field/text
+        parent: dnd-criteo-product-export-edit-properties
+        position: 110
+        targetZone: properties
+        config:
+            fieldCode: label
+            label: pim_enrich.form.job_instance.tab.properties.label.title
+            readOnly: false
+
+    dnd-criteo-product-export-edit-properties-file-path:
+        module: pim/job/common/edit/field/text
+        parent: dnd-criteo-product-export-edit-global
+        position: 120
+        targetZone: properties
+        config:
+            fieldCode: configuration.filePath
+            readOnly: false
+            label: pim_enrich.form.job_instance.tab.properties.file_path.title
+            tooltip: pim_enrich.form.job_instance.tab.properties.file_path.help
+
+    dnd-criteo-product-export-edit-properties-decimal-separator:
+        module: pim/job/common/edit/field/decimal-separator
+        parent: dnd-criteo-product-export-edit-global
+        position: 130
+        targetZone: properties
+        config:
+            fieldCode: configuration.decimalSeparator
+            readOnly: false
+            label: pim_enrich.form.job_instance.tab.properties.decimal_separator.title
+            tooltip: pim_enrich.form.job_instance.tab.properties.decimal_separator.help
+
+    dnd-criteo-product-export-edit-properties-date-format:
+        module: pim/job/product/edit/field/date-format
+        parent: dnd-criteo-product-export-edit-global
+        position: 140
+        targetZone: properties
+        config:
+            fieldCode: configuration.dateFormat
+            readOnly: false
+            label: pim_enrich.form.job_instance.tab.properties.date_format.title
+            tooltip: pim_enrich.form.job_instance.tab.properties.date_format.help
+
+    dnd-criteo-product-export-edit-properties-delimiter:
+        module: pim/job/common/edit/field/text
+        parent: dnd-criteo-product-export-edit-global
+        position: 150
+        targetZone: properties
+        config:
+            fieldCode: configuration.delimiter
+            readOnly: false
+            label: pim_enrich.form.job_instance.tab.properties.delimiter.title
+            tooltip: pim_enrich.form.job_instance.tab.properties.delimiter.help
+
+    dnd-criteo-product-export-edit-properties-enclosure:
+        module: pim/job/common/edit/field/text
+        parent: dnd-criteo-product-export-edit-global
+        position: 160
+        targetZone: properties
+        config:
+            fieldCode: configuration.enclosure
+            readOnly: false
+            label: pim_enrich.form.job_instance.tab.properties.enclosure.title
+            tooltip: pim_enrich.form.job_instance.tab.properties.enclosure.help
+
+    dnd-criteo-product-export-edit-properties-with-header:
+        module: pim/job/common/edit/field/switch
+        parent: dnd-criteo-product-export-edit-global
+        position: 170
+        targetZone: properties
+        config:
+            fieldCode: configuration.withHeader
+            readOnly: false
+            label: pim_enrich.form.job_instance.tab.properties.with_header.title
+            tooltip: pim_enrich.form.job_instance.tab.properties.with_header.help
+
+    dnd-criteo-product-export-edit-properties-with-media:
+        module: pim/job/common/edit/field/switch
+        parent: dnd-criteo-product-export-edit-global
+        position: 180
+        targetZone: properties
+        config:
+            fieldCode: configuration.with_media
+            readOnly: false
+            label: pim_enrich.form.job_instance.tab.properties.with_media.title
+            tooltip: pim_enrich.form.job_instance.tab.properties.with_media.help
+
+    dnd-criteo-product-export-edit-content-structure:
+        module: pim/job/product/edit/content/structure
+        parent: dnd-criteo-product-export-edit-content
+        targetZone: structure-filters
+        position: 100
+
+    dnd-criteo-product-export-edit-label:
+        module: pim/job/common/edit/label
+        parent: dnd-criteo-product-export-edit
+        targetZone: title
+        position: 100
+
+    dnd-criteo-product-export-edit-meta:
+        module: pim/job/common/edit/meta
+        parent: dnd-criteo-product-export-edit
+        targetZone: meta
+        position: 100
+
+    dnd-criteo-product-export-edit-secondary-actions:
+        module: pim/form/common/secondary-actions
+        parent: dnd-criteo-product-export-edit
+        targetZone: buttons
+        position: 50
+
+    dnd-criteo-product-export-edit-delete:
+        module: pim/job/export/edit/delete
+        parent: dnd-criteo-product-export-edit-secondary-actions
+        targetZone: secondary-actions
+        aclResourceId: pim_importexport_export_profile_remove
+        position: 100
+        config:
+            trans:
+                title: confirmation.remove.export_profile
+                subTitle: pim_menu.item.export_profile
+                content: pim_enrich.confirmation.delete_item
+                success: flash.job_instance.removed
+                failed: error.removing.job_instance
+            redirect: pim_importexport_export_profile_index
+
+    dnd-criteo-product-export-edit-save-buttons:
+        module: pim/form/common/save-buttons
+        parent: dnd-criteo-product-export-edit
+        targetZone: buttons
+        position: 120
+
+    dnd-criteo-product-export-edit-save:
+        module: pim/job-instance-export-edit-form/save
+        parent: dnd-criteo-product-export-edit
+        targetZone: buttons
+        position: 0
+        config:
+            redirectPath: pim_importexport_export_profile_show
+
+    dnd-criteo-product-export-edit-state:
+        module: pim/form/common/state
+        parent: dnd-criteo-product-export-edit
+        targetZone: state
+        position: 900
+        config:
+            entity: pim_enrich.entity.job_instance.title
+
+    dnd-criteo-product-export-edit-content-structure-scope:
+        module: pim/job/product/edit/content/structure/scope
+        parent: dnd-criteo-product-export-edit-content-structure
+        targetZone: filters
+        position: 90
+
+    dnd-criteo-product-export-edit-content-structure-locales:
+        module: pim/job/product/edit/content/structure/locales
+        parent: dnd-criteo-product-export-edit-content-structure
+        targetZone: filters
+        position: 100
+
+    dnd-criteo-product-export-edit-content-structure-attributes:
+        module: pim/job/product/edit/content/structure/attributes
+        parent: dnd-criteo-product-export-edit-content-structure
+        targetZone: filters
+        position: 110
+
+    dnd-criteo-product-export-edit-content-data:
+        module: pim/job/product/edit/content/data
+        parent: dnd-criteo-product-export-edit-content
+        targetZone: data-filters
+        config:
+            filters:
+                -
+                    field: family
+                    view: akeneo-product-family-filter
+                -
+                    field: enabled
+                    view: akeneo-product-enabled-filter
+                -
+                    field: completeness
+                    view: akeneo-product-completeness-filter
+                -
+                    field: updated
+                    view: akeneo-product-updated-filter
+                -
+                    field: categories
+                    view: akeneo-product-category-filter
+
+    dnd-criteo-product-export-edit-content-default-attribute-filters:
+        module: pim/job/product/edit/content/data/default-attribute-filters
+        parent: dnd-criteo-product-export-edit-content-data
+        config:
+            types: [pim_catalog_identifier]
+
+    dnd-criteo-product-export-edit-content-data-help:
+        module: pim/job/common/edit/content/data/help
+        parent: dnd-criteo-product-export-edit-content-data
+
+    dnd-criteo-product-export-edit-validation:
+        module: pim/job/common/edit/validation
+        parent: dnd-criteo-product-export-edit
+
+    dnd-criteo-product-export-edit-content-data-add-filter:
+        module: pim/job/product/edit/content/data/add-select/attribute
+        parent: dnd-criteo-product-export-edit-content-data
+        targetZone: headings
+        position: 90
+
+    # Criteo Fields Start -------------------------------------------------------------------------------------
+    dnd-criteo-product-export-edit-criteo:
+        module: pim/job/common/edit/properties
+        parent: dnd-criteo-product-export-edit-tabs
+        aclResourceId: pim_importexport_export_profile_property_edit
+        targetZone: container
+        position: 110
+        config:
+            tabTitle: dnd_criteo_connector.form.job_instance.tab.criteo.title
+            tabCode: pim-job-instance-criteo
+
+    dnd-criteo-product-export-edit-properties-pimMediaUrl:
+        module: pim/job/common/edit/field/text
+        parent: dnd-criteo-product-export-edit-criteo
+        position: 130
+        targetZone: properties
+        config:
+            fieldCode: configuration.pimMediaUrl
+            readOnly: false
+            label: dnd_criteo_connector.form.job_instance.tab.criteo.pimMediaUrl.title
+            tooltip: dnd_criteo_connector.form.job_instance.tab.criteo.pimMediaUrl.help
+
+    dnd-criteo-product-export-edit-properties-currency:
+     module: dnd/currencies-list
+     parent: dnd-criteo-product-export-edit-criteo
+     position: 140
+     targetZone: properties
+     config:
+         fieldCode: configuration.currency
+         readOnly: false
+         label: dnd_criteo_connector.form.job_instance.tab.criteo.currency.title
+         tooltip: dnd_criteo_connector.form.job_instance.tab.criteo.currency.help
+
+    dnd-criteo-product-export-edit-properties-id:
+        module: dnd/attributes-list
+        parent: dnd-criteo-product-export-edit-criteo
+        position: 150
+        targetZone: properties
+        config:
+            fieldCode: configuration.id
+            readOnly: false
+            label: dnd_criteo_connector.form.job_instance.tab.criteo.id.title
+            tooltip: dnd_criteo_connector.form.job_instance.tab.criteo.id.help
+
+    dnd-criteo-product-export-edit-properties-name:
+        module: dnd/attributes-list
+        parent: dnd-criteo-product-export-edit-criteo
+        position: 160
+        targetZone: properties
+        config:
+            fieldCode: configuration.name
+            readOnly: false
+            label: dnd_criteo_connector.form.job_instance.tab.criteo.name.title
+            tooltip: dnd_criteo_connector.form.job_instance.tab.criteo.name.help
+
+    dnd-criteo-product-export-edit-properties-description:
+        module: dnd/attributes-list
+        parent: dnd-criteo-product-export-edit-criteo
+        position: 170
+        targetZone: properties
+        config:
+            fieldCode: configuration.description
+            readOnly: false
+            label: dnd_criteo_connector.form.job_instance.tab.criteo.description.title
+            tooltip: dnd_criteo_connector.form.job_instance.tab.criteo.description.help
+
+    dnd-criteo-product-export-edit-properties-productUrl:
+        module: dnd/attributes-list
+        parent: dnd-criteo-product-export-edit-criteo
+        position: 180
+        targetZone: properties
+        config:
+            fieldCode: configuration.productUrl
+            readOnly: false
+            label: dnd_criteo_connector.form.job_instance.tab.criteo.productUrl.title
+            tooltip: dnd_criteo_connector.form.job_instance.tab.criteo.productUrl.help
+
+    dnd-criteo-product-export-edit-properties-smallImage:
+        module: dnd/attributes-list
+        parent: dnd-criteo-product-export-edit-criteo
+        position: 190
+        targetZone: properties
+        config:
+            fieldCode: configuration.smallImage
+            readOnly: false
+            label: dnd_criteo_connector.form.job_instance.tab.criteo.smallImage.title
+            tooltip: dnd_criteo_connector.form.job_instance.tab.criteo.smallImage.help
+
+    dnd-criteo-product-export-edit-properties-bigImage:
+        module: dnd/attributes-list
+        parent: dnd-criteo-product-export-edit-criteo
+        position: 200
+        targetZone: properties
+        config:
+            fieldCode: configuration.bigImage
+            readOnly: false
+            label: dnd_criteo_connector.form.job_instance.tab.criteo.bigImage.title
+            tooltip: dnd_criteo_connector.form.job_instance.tab.criteo.bigImage.help
+
+    dnd-criteo-product-export-edit-properties-price:
+        module: dnd/attributes-list
+        parent: dnd-criteo-product-export-edit-criteo
+        position: 210
+        targetZone: properties
+        config:
+            fieldCode: configuration.price
+            readOnly: false
+            label: dnd_criteo_connector.form.job_instance.tab.criteo.price.title
+            tooltip: dnd_criteo_connector.form.job_instance.tab.criteo.price.help
+
+    dnd-criteo-product-export-edit-properties-retailPrice:
+        module: dnd/attributes-list
+        parent: dnd-criteo-product-export-edit-criteo
+        position: 220
+        targetZone: properties
+        config:
+            fieldCode: configuration.retailPrice
+            readOnly: false
+            label: dnd_criteo_connector.form.job_instance.tab.criteo.retailPrice.title
+            tooltip: dnd_criteo_connector.form.job_instance.tab.criteo.retailPrice.help
+
+    dnd-criteo-product-export-edit-properties-recommendable:
+        module: dnd/attributes-list
+        parent: dnd-criteo-product-export-edit-criteo
+        position: 230
+        targetZone: properties
+        config:
+            fieldCode: configuration.recommendable
+            readOnly: false
+            label: dnd_criteo_connector.form.job_instance.tab.criteo.recommendable.title
+            tooltip: dnd_criteo_connector.form.job_instance.tab.criteo.recommendable.help
+
+    dnd-criteo-product-export-edit-properties-includeCategories:
+        module: pim/job/common/edit/field/switch
+        parent: dnd-criteo-product-export-edit-criteo
+        position: 240
+        targetZone: properties
+        config:
+            fieldCode: configuration.includeCategories
+            readOnly: false
+            label: dnd_criteo_connector.form.job_instance.tab.criteo.includeCategories.title
+            tooltip: dnd_criteo_connector.form.job_instance.tab.criteo.includeCategories.help
+    # Criteo Fields End ---------------------------------------------------------------------------------------
