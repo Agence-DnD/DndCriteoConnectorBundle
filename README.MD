@@ -67,4 +67,4 @@ $ ln -s /my/pim/installation/dir/web/file_storage /my/pim/installation/dir/app/f
 * Map your attributes to Criteo attributes (leave empty if you don't use one of them, see this [Article](http://support.datafeedwatch.com/hc/en-us/articles/200106112-Criteo) to know the required attributes)
 
 ## About us
-Founded by lovers of innovation and design, [Agence Dn'D] (http://www.dnd.fr) assists companies in the creation and development of customized digital (open source) solutions for web and E-commerce since 2004.
+Founded by lovers of innovation and design, [Agence Dn'D](https://www.dnd.fr) assists companies in the creation and development of customized digital (open source) solutions for web and E-commerce since 2004.
