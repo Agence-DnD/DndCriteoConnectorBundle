@@ -12,6 +12,7 @@ It will create a new "Criteo" export type in which you can map your Akeneo attri
 You can watch the webinar dedicated to the extension :
 
 [English version](https://www.youtube.com/watch?v=v9DY-QRZ33c)
+
 [French version](https://www.youtube.com/watch?v=bw8J1vM7ebs)
 
 ## Requirements
