@@ -3,7 +3,16 @@ CriteoConnectorBundle
 
 Criteo Connector for Akeneo PIM >= 1.5
 
-This connector allow you to export your products into XML for Criteo.
+This connector allows you to export your products into XML format for Criteo.
+
+It will create a new "Criteo" export type in which you can map your Akeneo attributes to the mandatory attributes needed for Criteo exports. The connector will generate a XML file with the correct header for Criteo integration.
+
+## Video demonstration
+
+You can watch the webinar dedicated to the extension :
+
+[English version](https://www.youtube.com/watch?v=v9DY-QRZ33c)
+[French version](https://www.youtube.com/watch?v=bw8J1vM7ebs)
 
 ## Requirements
 
