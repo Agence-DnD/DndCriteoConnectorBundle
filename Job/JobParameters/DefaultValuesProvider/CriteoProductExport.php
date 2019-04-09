@@ -2,8 +2,8 @@
 
 namespace Dnd\Bundle\CriteoConnectorBundle\Job\JobParameters\DefaultValuesProvider;
 
-use Akeneo\Component\Batch\Job\JobInterface;
-use Pim\Component\Connector\Job\JobParameters\DefaultValuesProvider\ProductCsvExport;
+use Akeneo\Tool\Component\Batch\Job\JobInterface;
+use Akeneo\Pim\Enrichment\Component\Product\Connector\Job\JobParameters\DefaultValueProvider\ProductCsvExport;
 
 /**
  * Class CriteoProductExport

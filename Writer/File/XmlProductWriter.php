@@ -2,21 +2,21 @@
 
 namespace Dnd\Bundle\CriteoConnectorBundle\Writer\File;
 
-use Akeneo\Component\Batch\Item\InvalidItemException;
-use Akeneo\Component\Batch\Item\ItemWriterInterface;
-use Akeneo\Component\Batch\Item\InitializableInterface;
-use Akeneo\Component\Batch\Job\JobParameters;
-use Akeneo\Component\Batch\Step\StepExecutionAwareInterface;
-use Akeneo\Component\Buffer\BufferFactory;
-use Akeneo\Component\Classification\Repository\CategoryRepositoryInterface;
+use Akeneo\Tool\Component\Batch\Item\InvalidItemException;
+use Akeneo\Tool\Component\Batch\Item\ItemWriterInterface;
+use Akeneo\Tool\Component\Batch\Item\InitializableInterface;
+use Akeneo\Tool\Component\Batch\Job\JobParameters;
+use Akeneo\Tool\Component\Batch\Step\StepExecutionAwareInterface;
+use Akeneo\Tool\Component\Buffer\BufferFactory;
+use Akeneo\Tool\Component\Classification\Repository\CategoryRepositoryInterface;
 use Entity\Category;
-use Pim\Bundle\CatalogBundle\Entity\Channel;
-use Pim\Component\Catalog\AttributeTypes;
-use Pim\Component\Catalog\Repository\AttributeRepositoryInterface;
-use Pim\Component\Catalog\Repository\ChannelRepositoryInterface;
-use Pim\Component\Connector\Writer\File\AbstractFileWriter;
-use Pim\Component\Connector\Writer\File\FlatItemBuffer;
-use Pim\Component\Connector\Writer\File\FlatItemBufferFlusher;
+use Akeneo\Channel\Component\Model\Channel;
+use Akeneo\Pim\Structure\Component\AttributeTypes;
+use Akeneo\Pim\Structure\Component\Repository\AttributeRepositoryInterface;
+use Akeneo\Channel\Component\Repository\ChannelRepositoryInterface;
+use Akeneo\Tool\Component\Connector\Writer\File\AbstractFileWriter;
+use Akeneo\Tool\Component\Connector\Writer\File\FlatItemBuffer;
+use Akeneo\Tool\Component\Connector\Writer\File\FlatItemBufferFlusher;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Exception;
 use DOMDocument;
@@ -254,10 +254,12 @@ class XmlProductWriter extends AbstractFileWriter implements
                     case AttributeTypes::OPTION_MULTI_SELECT:
                     case AttributeTypes::OPTION_SIMPLE_SELECT:
                         foreach ($attribute->getOptions() as $option) {
-                            if ($option->getCode() == $value) {
-                                $newProduct[$newKey[0]] = $option->setLocale($parameters['locale'])->getOptionValue(
-                                )->getLabel();
-                                break;
+                            if ($option->getCode() === $value) {
+                                if (null !== $option->setLocale($parameters['locale'])->getOptionValue()) {
+                                    $newProduct[$newKey[0]] = $option->setLocale($parameters['locale'])->getOptionValue(
+                                    )->getLabel();
+                                    break;
+                                }
                             }
                         }
                         break;

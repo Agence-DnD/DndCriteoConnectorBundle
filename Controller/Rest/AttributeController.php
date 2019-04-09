@@ -2,8 +2,8 @@
 
 namespace Dnd\Bundle\CriteoConnectorBundle\Controller\Rest;
 
-use Pim\Component\Catalog\Repository\AttributeRepositoryInterface;
-use Pim\Component\Catalog\Repository\CurrencyRepositoryInterface;
+use Akeneo\Pim\Structure\Component\Repository\AttributeRepositoryInterface;
+use Akeneo\Channel\Component\Repository\CurrencyRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**

@@ -19,6 +19,7 @@ You can watch the webinar dedicated to the extension :
 
 | CriteoConnectorBundle   | Akeneo PIM Community Edition |
 |:-----------------------:|:----------------------------:|
+| v2.0.*                  | v3.*                         |
 | v1.3.*                  | v2.*                         |
 | v1.2.*                  | v1.7.*                       |
 | v1.1.*                  | v1.6.*                       |

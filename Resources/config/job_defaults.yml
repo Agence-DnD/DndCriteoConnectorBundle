@@ -5,7 +5,7 @@ services:
     dnd_criteo_connector.job.job_parameters.default_values_provider.criteo_product_xml_export:
         class: '%dnd_criteo_connector.job.job_parameters.default_values_provider.criteo_product_xml_export.class%'
         arguments:
-          - '@pim_connector.job.job_parameters.default_values_provider.simple_csv_export'
+          - '@akeneo_pim_enrichment.job.job_parameters.default_values_provider.simple_csv_export'
           - '@pim_catalog.repository.channel'
           - '@pim_catalog.repository.locale'
           -
