@@ -14,5 +14,4 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class DndCriteoConnectorBundle extends Bundle
 {
-
 }

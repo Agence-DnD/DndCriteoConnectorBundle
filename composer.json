@@ -5,7 +5,7 @@
   "keywords": ["pim", "dnd", "ecommerce", "e-commerce", "criteo", "feed", "connector", "xml", "flow", "akeneo", "mapping"],
   "homepage": "https://dnd.fr",
   "license": "OSL-3.0",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "authors": [
     {
       "name":     "Agence Dn'D",

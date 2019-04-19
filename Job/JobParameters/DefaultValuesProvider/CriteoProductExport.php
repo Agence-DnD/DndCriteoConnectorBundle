@@ -9,9 +9,9 @@ use Akeneo\Pim\Enrichment\Component\Product\Connector\Job\JobParameters\DefaultV
  * Class CriteoProductExport
  *
  * @author          Didier Youn <didier.youn@dnd.fr>
- * @copyright       Copyright (c) 2017 Agence Dn'D
- * @license         http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @link            http://www.dnd.fr/
+ * @copyright       Copyright (c) 2019 Agence Dn'D
+ * @license         https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link            https://www.dnd.fr/
  */
 class CriteoProductExport extends ProductCsvExport
 {
@@ -21,7 +21,8 @@ class CriteoProductExport extends ProductCsvExport
     public function getDefaultValues()
     {
         return array_merge(
-            parent::getDefaultValues(),[
+            parent::getDefaultValues(),
+            [
                 'filePath'          => './tmp/export_criteo.xml',
                 'currency'          => null,
                 'id'                => null,

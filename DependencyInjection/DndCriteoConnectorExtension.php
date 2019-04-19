@@ -11,9 +11,9 @@ use Symfony\Component\DependencyInjection\Loader;
  * Class DndCriteoConnectorExtension
  *
  * @author          Didier Youn <didier.youn@dnd.fr>
- * @copyright       Copyright (c) 2017 Agence Dn'D
- * @license         http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @link            http://www.dnd.fr/
+ * @copyright       Copyright (c) 2019 Agence Dn'D
+ * @license         https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link            https://www.dnd.fr/
  */
 class DndCriteoConnectorExtension extends Extension
 {
@@ -31,5 +31,7 @@ class DndCriteoConnectorExtension extends Extension
         $loader->load('providers.yml');
         $loader->load('steps.yml');
         $loader->load('writers.yml');
+        $loader->load('array_converters.yml');
+        $loader->load('renderers.yml');
     }
 }

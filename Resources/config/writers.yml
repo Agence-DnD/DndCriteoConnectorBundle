@@ -1,13 +1,14 @@
 parameters:
-    dnd_criteo_connector.writer.file.xml_product.class: Dnd\Bundle\CriteoConnectorBundle\Writer\File\XmlProductWriter
+  dnd_criteo_connector.writer.file.xml.product.class: Dnd\Bundle\CriteoConnectorBundle\Writer\File\Xml\Writer
 
 services:
-    dnd_criteo_connector.writer.file.xml_product:
-        class: '%dnd_criteo_connector.writer.file.xml_product.class%'
-        arguments:
-            - '@pim_catalog.repository.attribute'
-            - '@pim_catalog.repository.category'
-            - '@pim_catalog.repository.channel'
-            - '@pim_connector.factory.flat_item_buffer'
-            - '@pim_connector.writer.file.flat_item_buffer_flusher'
-            - 'product'
+  dnd_criteo_connector.writer.file.xml.product:
+    class: '%dnd_criteo_connector.writer.file.xml.product.class%'
+    arguments:
+      - '@pim_catalog.repository.attribute'
+      - '@pim_catalog.repository.category'
+      - '@pim_catalog.repository.channel'
+      - '@pim_connector.factory.flat_item_buffer'
+      - '@dnd_criteo_connector.array_converter.standard_to_flat.attribute.criteo'
+      - 'product'
+      - 'id'

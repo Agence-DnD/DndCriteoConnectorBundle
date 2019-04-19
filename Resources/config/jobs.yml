@@ -1,15 +1,15 @@
 parameters:
-    dnd_criteo_connector.job_name.connector_name.csv:         'Dnd Criteo Connector'
-    dnd_criteo_connector.job_name.xml_criteo_product_export:  'dnd_criteo_connector_xml_product_export'
+  dnd_criteo_connector.job_name.connector_name.csv:         'Dnd Criteo Connector'
+  dnd_criteo_connector.job_name.xml_criteo_product_export:  'dnd_criteo_connector_xml_product_export'
 
 services:
-    dnd_criteo_connector.job.xml_criteo_product_export:
-        class: '%pim_connector.job.simple_job.class%'
-        arguments:
-            - '%dnd_criteo_connector.job_name.xml_criteo_product_export%'
-            - '@event_dispatcher'
-            - '@akeneo_batch.job_repository'
-            -
-                - '@dnd_criteo_connector.step.xml_criteo_product_export.export'
-        tags:
-            - { name: akeneo_batch.job,connector: '%dnd_criteo_connector.job_name.connector_name.csv%', type: '%pim_connector.job.export_type%' }
+  dnd_criteo_connector.job.xml_criteo_product_export:
+    class: '%pim_connector.job.simple_job.class%'
+    arguments:
+      - '%dnd_criteo_connector.job_name.xml_criteo_product_export%'
+      - '@event_dispatcher'
+      - '@akeneo_batch.job_repository'
+      -
+        - '@dnd_criteo_connector.step.xml_criteo_product_export.export'
+    tags:
+      - { name: akeneo_batch.job,connector: '%dnd_criteo_connector.job_name.connector_name.csv%', type: '%pim_connector.job.export_type%' }

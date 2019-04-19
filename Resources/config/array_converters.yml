@@ -1,0 +1,9 @@
+parameters:
+  dnd_criteo_connector.array_converter.standard_to_flat.attribute.criteo.class: Dnd\Bundle\CriteoConnectorBundle\ArrayConverter\StandardToFlat\ProductConverter
+
+services:
+  dnd_criteo_connector.array_converter.standard_to_flat.attribute.criteo:
+    class: '%dnd_criteo_connector.array_converter.standard_to_flat.attribute.criteo.class%'
+    parent: pim_connector.array_converter.standard_to_flat.product_localized
+    arguments:
+      - '@dnd_criteo_connector.renderer.public_file'
