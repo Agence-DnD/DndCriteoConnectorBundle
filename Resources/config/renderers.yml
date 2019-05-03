@@ -1,0 +1,6 @@
+services:
+  dnd_criteo_connector.renderer.public_file:
+    class: Dnd\Bundle\CriteoConnectorBundle\Renderer\PublicFileRenderer
+    arguments:
+      - '@liip_imagine.cache.manager'
+      - 'thumbnail_full'

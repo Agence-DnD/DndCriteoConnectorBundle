@@ -1,6 +1,6 @@
 services:
     dnd_criteo_connector.provider.form.job_instance:
-        class: '%pim_enrich.provider.form.job_instance.class%'
+        class: 'Akeneo\Platform\Bundle\ImportExportBundle\Provider\Form\JobInstanceFormProvider'
         arguments:
             -
                 dnd_criteo_connector_xml_product_export: dnd-criteo-product-export

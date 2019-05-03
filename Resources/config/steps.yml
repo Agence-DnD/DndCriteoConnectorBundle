@@ -1,11 +1,11 @@
 services:
-    dnd_criteo_connector.step.xml_criteo_product_export.export:
-        class: '%pim_connector.step.item_step.class%'
-        arguments:
-            - 'export'
-            - '@event_dispatcher'
-            - '@akeneo_batch.job_repository'
-            - '@pim_connector.reader.database.product'
-            - '@pim_connector.processor.normalization.product'
-            - '@dnd_criteo_connector.writer.file.xml_product'
-            - 10
+  dnd_criteo_connector.step.xml_criteo_product_export.export:
+    class: '%pim_connector.step.item_step.class%'
+    arguments:
+      - 'export'
+      - '@event_dispatcher'
+      - '@akeneo_batch.job_repository'
+      - '@pim_connector.reader.database.product'
+      - '@pim_connector.processor.normalization.product'
+      - '@dnd_criteo_connector.writer.file.xml.product'
+      - 10
